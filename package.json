@@ -1,0 +1,22 @@
+{
+  "name": "job-portal",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm run dev:all",
+    "dev:auth": "npm --prefix services/auth-service run dev",
+    "dev:job": "npm --prefix services/job-company-service run dev",
+    "dev:app": "npm --prefix services/application-service run dev",
+    "dev:all": "npm run dev:auth & npm run dev:job & npm run dev:app",
+    "dbs": "docker compose up -d auth-db jobcompany-db application-db",
+    "docker:all": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "install:auth": "npm --prefix services/auth-service install",
+    "install:job": "npm --prefix services/job-company-service install",
+    "install:app": "npm --prefix services/application-service install",
+    "install:all": "npm run install:auth && npm run install:job && npm run install:app"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

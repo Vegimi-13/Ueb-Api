@@ -1,0 +1,59 @@
+# ================================
+# Node
+# ================================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ================================
+# Environment files
+# ================================
+.env
+.env.*
+!.env.example
+
+# ================================
+# Docker
+# ================================
+docker-data/
+*.log
+.tmp/
+
+# ================================
+# Prisma
+# ================================
+services/**/prisma/dev.db
+services/**/prisma/dev.db-journal
+services/**/prisma/migrations/**/migration_lock.toml
+
+# ================================
+# OS
+# ================================
+.DS_Store
+Thumbs.db
+
+# ================================
+# IDE
+# ================================
+.vscode/
+.idea/
+
+# ================================
+# Build / cache
+# ================================
+dist/
+build/
+coverage/
+.cache/
+
+# ================================
+# gRPC generated (if ever generated later)
+# ================================
+services/**/src/grpc/generated/
+
+# ================================
+# Misc
+# ================================
+*.swp
+*.tmp

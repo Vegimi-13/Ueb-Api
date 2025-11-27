@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  # ------------------------
+  # AUTH DB (MySQL)
+  # ------------------------
+  auth-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: auth_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - auth_data:/var/lib/mysql
+
+  # ------------------------
+  # JOB DB (MySQL)
+  # ------------------------
+  jobcompany-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: jobcompany_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - jobcompany_data:/var/lib/mysql
+
+  # ------------------------
+  # APPLICATION DB (MySQL)
+  # ------------------------
+  application-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: application_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - application_data:/var/lib/mysql
+
+  # ------------------------
+  # AUTH SERVICE
+  # ------------------------
+  auth-service:
+    build: ./services/auth-service
+    depends_on:
+      - auth-db
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./services/auth-service/.env
+
+  # ------------------------
+  # JOB SERVICE
+  # ------------------------
+  job-company-service:
+    build: ./services/job-company-service
+    depends_on:
+      - jobcompany-db
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./services/job-company-service/.env
+
+  # ------------------------
+  # APPLICATION SERVICE
+  # ------------------------
+  application-service:
+    build: ./services/application-service
+    depends_on:
+      - application-db
+    ports:
+      - "4003:4003"
+    env_file:
+      - ./services/application-service/.env
+
+volumes:
+  auth_data:
+  jobcompany_data:
+  application_data:
