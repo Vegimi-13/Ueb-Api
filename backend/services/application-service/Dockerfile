@@ -7,8 +7,7 @@ RUN npm install
 
 COPY . .
 
-RUN npx prisma generate
+# DO NOT run prisma here (yet)
+# DO NOT expose a hard-coded port (compose handles ports)
 
-EXPOSE 4003   
-
-CMD ["node", "src/index.js"]
+CMD ["npm", "run", "dev"]
