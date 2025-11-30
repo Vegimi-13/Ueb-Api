@@ -12,3 +12,28 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Applications {
+  application_id Int @id @default(autoincrement())
+  job_id Int 
+  candidate_id Int
+  status_id Int
+  resume_link String
+  applied_at DateTime
+
+  
+  status ApplicationStatus @relation(fields: [status_id], references: [status_id])
+
+   @@index([candidate_id])
+   @@index([job_id])
+   @@index([status_id])
+
+   
+}
+
+model ApplicationStatus {
+  status_id  Int     @id @default(autoincrement())
+  name       String  @unique
+  
+  applications Applications[]
+}
