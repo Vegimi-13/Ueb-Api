@@ -5,6 +5,8 @@ require("dotenv").config();
 const app=express();
 app.use(express.json());
 
+app.use("/categories",require("./routes/category"));
+
 const PORT=process.env.PORT || 4002;
 /*
 app.get("/",async(req, res)=>{
