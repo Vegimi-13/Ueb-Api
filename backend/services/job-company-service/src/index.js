@@ -1,7 +1,6 @@
 const express=require("express");
 const prisma=require("./prisma");
 require("dotenv").config();
-
 const app=express();
 app.use(express.json());
 
