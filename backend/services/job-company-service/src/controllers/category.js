@@ -18,11 +18,11 @@ exports.getAllCategories=async(req,res)=>{
         const categories=await prisma.category.findMany();
         res.json(categories);
     }catch(err){
-        res.status(500).json({rror: err.message});
+        res.status(500).json({error: err.message});
     }
 };
 
-exports.updaeCategory=async(req,res)=>{
+exports.updateCategory=async(req,res)=>{
     try{
         const {id}=req.params;
         const{name}=req.body;
