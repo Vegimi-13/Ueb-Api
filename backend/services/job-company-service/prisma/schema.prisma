@@ -26,23 +26,40 @@ model Location{
   jobs Job[]
   createdAt DateTime @default(now())
 }
-
-model Job{
-  id Int @id @default(autoincrement())
-  title String
-  description String
-  salary Int?
-  startTime DateTime?
-  endTime DateTime?
-  JobType JobType @default(FULL_TIME)
-  categoryId Int
-  locationId Int
-  category    Category  @relation(fields: [categoryId], references: [id])
-  location    Location  @relation(fields: [locationId], references: [id])
-
-  createdAt   DateTime  @default(now())
-}
-enum JobType{
+enum JobType {
   FULL_TIME
   PART_TIME
+}
+model Job {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  salary      Int?
+  startTime   DateTime?
+  endTime     DateTime?
+  JobType     JobType   @default(FULL_TIME)
+
+  categoryId  Int
+  locationId  Int
+  companyId   Int
+
+  category    Category @relation(fields: [categoryId], references: [id])
+  location    Location @relation(fields: [locationId], references: [id])
+  company     Company  @relation(fields: [companyId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
+
+model Company {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique
+  description       String?
+  website            String?
+  numberOfEmployees Int?
+  createdAt         DateTime @default(now())
+
+  ownerId           Int
+  
+
+  jobs              Job[]
 }

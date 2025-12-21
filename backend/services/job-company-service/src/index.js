@@ -5,6 +5,7 @@ const app=express();
 app.use(express.json());
 
 app.use("/categories",require("./routes/category"));
+app.use("/Locations",require("./routes/location"));
 
 const PORT=process.env.PORT || 4002;
 /*
