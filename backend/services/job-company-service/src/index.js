@@ -6,7 +6,8 @@ app.use(express.json());
 
 app.use("/categories",require("./routes/category"));
 app.use("/Locations",require("./routes/location"));
-
+app.use("/Locations",require("./routes/job"));
+app.use("/Locations",require("./routes/company"));
 const PORT=process.env.PORT || 4002;
 /*
 app.get("/",async(req, res)=>{
