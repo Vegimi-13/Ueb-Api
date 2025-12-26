@@ -7,7 +7,7 @@ module.exports = {
     async addApplications (req,res) {
   try{
     const jobId=req.body.jobId;
-    const candidateId=req.body.candidateId;
+    const candidateId=req.user.id;
     const resumeLink = req.body.resumeLink;
     
     const status = await prisma.applicationStatus.findFirst({
