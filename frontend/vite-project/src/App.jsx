@@ -1,43 +1,64 @@
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicLayout from "./layouts/PublicLayouts";
+
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CandidateDashboard from "./pages/candidate/CandidateDashboard";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
+import Home from "./pages/Home";
 
 function App() {
   return (
-    <Routes>
-      <Route
-        element={
-          <ProtectedRoute allowed={["admin"]}>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="admin" element={<AdminDashboard />} />
+   <Routes>
+
+  {/* PUBLIC ROUTES */}
+  <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
+        
       </Route>
 
-      <Route
-        element={
-          <ProtectedRoute allowed={["candidate"]}>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="candidate" element={<CandidateDashboard />} />
-      </Route>
+  
+ 
 
-      <Route
-        element={
-          <ProtectedRoute allowed={["company"]}>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="company" element={<CompanyDashboard />} />
-      </Route>
-    </Routes>
+  {/* ADMIN */}
+  <Route
+    path="/admin/*"
+    element={
+      <ProtectedRoute allowed={["admin"]}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<AdminDashboard />} />
+  </Route>
+
+  {/* CANDIDATE */}
+  <Route
+    path="/candidate/*"
+    element={
+      <ProtectedRoute allowed={["candidate"]}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<CandidateDashboard />} />
+  </Route>
+
+  {/* COMPANY */}
+  <Route
+    path="/company/*"
+    element={
+      <ProtectedRoute allowed={["company"]}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<CompanyDashboard />} />
+  </Route>
+
+</Routes>
+
   );
 }
 
