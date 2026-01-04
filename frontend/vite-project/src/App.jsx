@@ -6,10 +6,26 @@ import PublicLayout from "./layouts/PublicLayouts";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CandidateDashboard from "./pages/candidate/CandidateDashboard";
 import CompanyDashboard from "./pages/company/CompanyDashboard";
+import CreateCategory from "./pages/company/CreateCategory";
+import Location from "./pages/company/Location";
 import Home from "./pages/Home";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
+
 
 function App() {
   return (
+    <>
+     <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
    <Routes>
 
   {/* PUBLIC ROUTES */}
@@ -31,6 +47,8 @@ function App() {
     }
   >
     <Route index element={<AdminDashboard />} />
+    <Route path="category" element={<CreateCategory/>}/>
+    <Route path="location" element={<Location/>}/>
   </Route>
 
   {/* CANDIDATE */}
@@ -55,9 +73,11 @@ function App() {
     }
   >
     <Route index element={<CompanyDashboard />} />
+    
   </Route>
 
 </Routes>
+</>
 
   );
 }

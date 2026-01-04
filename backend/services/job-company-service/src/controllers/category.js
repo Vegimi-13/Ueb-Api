@@ -8,9 +8,15 @@ exports.createCategory=async(req,res)=>{
             data: {name},
         });
         res.json(category);
-    }catch(err){
-        res.status(500).json({error: err.message});
-    }
+    }catch (err) {
+  if (err.code === "P2002") {
+    return res.status(409).json({ error: "Category already exists" });
+  }
+  console.error(err);
+  res.status(500).json({ error: "Server error" });
+}
+
+
 }
 
 exports.getAllCategories=async(req,res)=>{

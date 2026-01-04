@@ -5,6 +5,8 @@ const auth = require("../middleware/auth.middleware");
 const requireRole = require("../middleware/role.middleware");
 
 
+
+
 router.post("/",auth,requireRole("EMPLOYER","ADMIN"),controller.createCompany);
 router.get("/",controller.getAllCompanies);
 router.get("/:id", controller.getCompanyById);

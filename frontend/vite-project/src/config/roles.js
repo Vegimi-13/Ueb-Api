@@ -18,6 +18,8 @@ export const roles = {
     menu: [
         { label: "Dashboard", path: "/company" ,  icon: "bi-speedometer2"},
         { label: "Profile", path: "/company/profile" },
+        
+        { label: "Create Job", path: "/company/job" },
         { label: "Open Job Applications", path: "/company/openApplications" },
     ],
   },
