@@ -13,6 +13,14 @@ exports.createCompany=async(req,res)=>{
          if (!name) {
       return res.status(400).json({ error: "Company name is required" });
          }
+        
+    const existingCompany = await prisma.company.findFirst({
+      where: { ownerId }
+    });
+
+    if (existingCompany) {
+      return res.status(400).json({ error: "You already have a company" });
+    }
 
       const company= await prisma.company.create({
         data: 
@@ -24,6 +32,7 @@ exports.createCompany=async(req,res)=>{
             ownerId
         },
       });
+  
       return res.status(201).json(company);
     
     }catch (err) {
@@ -109,3 +118,23 @@ exports.deleteCompany=async(req,res)=>{
     return res.status(500).json({ error: "Failed to delete company" });
   }
 }
+exports.getMyCompany = async (req, res) => {
+  try {
+    console.log("REQ.USER:", req.user);
+
+    const company = await prisma.company.findFirst({
+      where: { ownerId: req.user.id },
+    });
+
+    console.log("FOUND COMPANY:", company);
+
+    if (!company) {
+      return res.status(404).json({ error: "No company found" });
+    }
+
+    res.json(company);
+  } catch (err) {
+    console.error("GET /companies/me ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
