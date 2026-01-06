@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 4003;
-const controller = require("../controllers/appliaction.controller");
+const controller = require("../controllers/application.controller");
 const router = express.Router();
 
 

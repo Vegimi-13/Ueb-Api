@@ -95,6 +95,8 @@ module.exports = {
   }
 },
  async getStatus (req,res) {
+    console.log("getStatus hit");
+
   try{
     const statuses = await prisma.applicationStatus.findMany();
     res.json(statuses);
@@ -102,6 +104,8 @@ module.exports = {
     res.status(500).json({ error: error.message });
   }
 }
+
+
 
 };
 
