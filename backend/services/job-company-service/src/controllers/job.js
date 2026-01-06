@@ -2,73 +2,74 @@ const prisma= require('../prisma');
 
 
 
-exports.createJob=async(req,res)=>{
-    try{
-        const{
-            title,
-            description,
-            salary,
-            startTime,
-            endTime,
-            JobType,
-            categoryId,
-            locationId,
-            companyId
-        }=req.body;
-        if (!title || !description || !categoryId || !locationId || !companyId) {
+exports.createJob = async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      salary,
+      startTime,
+      endTime,
+      JobType,
+      categoryId,
+      locationId,
+    } = req.body;
+
+    if (!title || !description || !categoryId || !locationId) {
       return res.status(400).json({
         error: "title, description, categoryId and locationId are required",
       });
     }
-    const company = await prisma.company.findUnique({
-      where: { id: Number(companyId) },
+
+    
+    const company = await prisma.company.findFirst({
+      where: { ownerId: req.user.id },
     });
 
     if (!company) {
-      return res.status(404).json({ error: "Company not found" });
+      return res.status(400).json({ error: "You must create a company first" });
     }
 
-    if (company.ownerId !== req.user.id) {
-      return res.status(403).json({ error: "You do not own this company" });
-    }
+    const job = await prisma.job.create({
+      data: {
+        title,
+        description,
+        salary,
+        startTime,
+        endTime,
+        JobType,
+        categoryId: Number(categoryId),
+        locationId: Number(locationId),
+        companyId: company.id, 
+      },
+      include: {
+        category: true,
+        location: true,
+        company: true,
+      },
+    });
 
-        const job= await prisma.job.create({
-            data :{ 
-                title,
-                description,
-                salary,
-                startTime,
-                endTime,
-                JobType,
-                categoryId,
-                locationId,
-                companyId
-            },
-            include: {
-                category: true,
-                location: true,
-                company: true,
-            },
-            
+    res.status(201).json(job);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
 
-        });
-        res.json(job);
-    }catch(err){
-        res.status(500).json({error: err.message});
-
-    }
-}
-exports.getAllJobs=async(req,res)=>{
-    try{
-        const jobs=await prisma.job.findMany({
-            orderBy: {
-                createdAt: "desc",
-            }
-        });
-        res.json(jobs);
-    }catch(err){
-        res.status(500).json({error: err.message});
-    }
+exports.getAllJobs = async (req, res) => {
+  try {
+    const jobs = await prisma.job.findMany({
+      orderBy: { createdAt: "desc" },  
+      include: {
+        category: true,
+        location: true,
+        company: true
+      }
+    });
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.updateJobs=async(req,res)=>{

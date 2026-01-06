@@ -9,7 +9,9 @@ import CompanyDashboard from "./pages/company/Dashboard";
 import CreateCategory from "./pages/admin/CreateCategory";
 import Location from "./pages/admin/Location";
 import Company from "./pages/company/Company";
+import Jobs from "./pages/company/Job";
 import Home from "./pages/Home";
+import SearchJobs from "./pages/SearchJobs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -32,6 +34,7 @@ function App() {
   {/* PUBLIC ROUTES */}
   <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/searchJobs" element={<SearchJobs />} />
         
       </Route>
 
@@ -75,6 +78,7 @@ function App() {
   >
     <Route index element={<CompanyDashboard />} />
     <Route path="registerCompany" element={<Company/>}/>
+    <Route path="jobs" element={<Jobs/>}/>
     
   </Route>
 

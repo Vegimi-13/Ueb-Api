@@ -35,8 +35,8 @@ model Job {
   title       String
   description String
   salary      Int?
-  startTime   DateTime?
-  endTime     DateTime?
+  startTime   String?
+  endTime     String?
   JobType     JobType   @default(FULL_TIME)
 
   categoryId  Int

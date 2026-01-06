@@ -20,7 +20,7 @@ export const roles = {
         { label: "Profile", path: "/company/profile" },
         { label: "Register Company", path: "/company/registerCompany" },
         
-        { label: "Create Job", path: "/company/job" },
+        { label: "Create Jobs", path: "/company/jobs" },
         { label: "Open Job Applications", path: "/company/openApplications" },
     ],
   },

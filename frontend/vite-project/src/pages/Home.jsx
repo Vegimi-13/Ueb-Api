@@ -9,7 +9,7 @@ export default function Home() {
       <p style={{ fontSize: "1.5rem", marginBottom: "2rem" }}>
         Search and apply for your dream job easily.
       </p>
-      <Link to="/jobs" className="btn btn-primary btn-lg px-5">
+      <Link to="/searchJobs" className="btn btn-primary btn-lg px-5">
         Search Jobs
       </Link>
     </div>
