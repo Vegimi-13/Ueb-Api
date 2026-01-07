@@ -76,38 +76,40 @@ export default function OpenApplications(){
   }
     }
 
-    const confirmDelete=()=>{
-            toast(
-                ({closeToast})=>(
-                    <div>
-                        <p>Are you sure you want to delete this job application?</p>
-                        <p className="text-danger mb-2">
-                            This action cannot be undone.
-                        </p>
-                        <div className="d-flex gap-2">
-                            <button  className="btn btn-sm btn-danger"
-                        onClick={async()=>{
-                            try{
-                                await axios.delete(`http://localhost:4002/jobs/${jobId}`);
-    
-                                toast.success("Job Application deleted successfully");
-    
-                                setJobId(null);
-                                fetchJobs();
-                                closeToast();
-                            }catch(err){
-                                console.error(err);
-                                toast.error("Failed to delete job");
-                            }
-                        }}>Delete</button>
-                        <button className="btn btn-sm btn-secondary"
-                        onClick={closeToast}>Cancel</button>
-                        </div>
-                    </div>
-                ),
-                {autoClose: false}
-            );
-        };
+    const confirmDelete = (id) => {
+  toast(
+    ({ closeToast }) => (
+      <div>
+        <p>Are you sure you want to delete this job application?</p>
+        <p className="text-danger mb-2">This action cannot be undone.</p>
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-sm btn-danger"
+            onClick={async () => {
+              try {
+                
+                await axios.delete(`http://localhost:4002/jobs/${id}`);
+                toast.success("Job Application deleted successfully");
+                fetchJobs();
+                closeToast();
+              } catch (err) {
+                console.error(err);
+                toast.error("Failed to delete job");
+              }
+            }}
+          >
+            Delete
+          </button>
+          <button className="btn btn-sm btn-secondary" onClick={closeToast}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    ),
+    { autoClose: false }
+  );
+};
+
     
     return(
         <>
@@ -153,10 +155,7 @@ export default function OpenApplications(){
             </td>
             <td> <button type="button"
                 className="btn btn-outline-danger btn-sm w-50" 
-                onClick={()=>{
-                    setJobId(j.id);
-                    confirmDelete();
-                }}>Delete</button>
+                onClick={() => confirmDelete(j.id)}>Delete</button>
          </td>
            
            
