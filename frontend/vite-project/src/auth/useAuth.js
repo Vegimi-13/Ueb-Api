@@ -1,6 +1,8 @@
 export default function useAuth() {
 
   const role = "admin"; // "candidate","company"
+  //const role = "candidate"; 
+  //const role = "company"; 
 
   return {
     isAuthenticated: true,

@@ -8,6 +8,7 @@ module.exports = {
   try{
     const jobId=req.body.jobId;
     const candidateId=req.user.id;
+    console.log(candidateId);
     const resumeLink = req.body.resumeLink;
     
     const status = await prisma.applicationStatus.findFirst({
@@ -37,7 +38,11 @@ module.exports = {
  async applications (req, res) { 
 
     try {
-    const applications = await prisma.applications.findMany();
+      const applications = await prisma.applications.findMany({
+        include: {
+          status: true,
+        }
+      });    
     res.json(applications);
   
  } catch (err) {
@@ -103,9 +108,26 @@ module.exports = {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+},
+async candidateApplications (req, res) {
+  try {
+    const candidateId = req.user.id; // from token
+
+    const applications = await prisma.applications.findMany({
+      where: {
+        candidate_id: candidateId
+      },
+      include: {
+        status: true,
+      }
+    });
+
+    res.json(applications);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }
-
-
 
 };
 

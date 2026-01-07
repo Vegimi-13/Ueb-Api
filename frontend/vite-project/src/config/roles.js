@@ -4,14 +4,16 @@ export const roles = {
       { label: "Dashboard", path: "/admin", icon: "bi-speedometer2" },
       { label: "Manage Users", path: "/admin/users",  icon: "bi-people" },
       { label: "Job Category", path: "/admin/category", icon: "bi bi-bookmarks-fill" },
-      { label: "Job Location", path: "/admin/location" , icon: "bi bi-geo-alt-fill"}
+      { label: "Job Location", path: "/admin/location" , icon: "bi bi-geo-alt-fill"},
+      { label: "Applications", path: "/admin/applications",icon: "bi-file-earmark-text"}
     ],
   },
   candidate: {
     menu: [
         { label: "Dashboard", path: "/candidate" , icon: "bi-speedometer2"},
         { label: "My Profile", path: "/candidate/profile", icon:  "bi-person" },
-        { label: "My Job Applications", path: "/candidate/applications" , icon: "bi-ui-radios"},
+        { label: "My Job Applications", path: "/candidate/candidateApplications" , icon: "bi-ui-radios"},
+        { label: "Search Jobs", path: "/candidate/searchJobsByCandidate", icon: "bi-file-earmark-plus" }
     ],
   },
   company: {

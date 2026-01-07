@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-export default function SearchJobs() {
+export default function SearchJobsByCandidate() {
 const [jobs, setJobs]=useState([]);
 
   const fetchJobs=async()=>{
@@ -37,9 +37,12 @@ const [jobs, setJobs]=useState([]);
               <small>Type: {job.JobType.replace("_", " ")}</small>
             </div>
           </div>
-          <Link className="btn btn-primary px-4" to="/login">Apply</Link>
-
-        </div>
+<Link
+  className="btn btn-primary px-4 mt-3"
+  to={`/candidate/addApplication/${job.id}`}
+>
+  Apply
+</Link>        </div>
       ))}
     </div>
 
