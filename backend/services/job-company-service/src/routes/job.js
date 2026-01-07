@@ -8,8 +8,8 @@ const requireRole = require("../middleware/role.middleware");
 
 router.post("/",auth,requireRole("EMPLOYER","ADMIN"),controller.createJob);
 router.get("/",controller.getAllJobs);
-router.put("/:id",controller.updateJobs);
-router.delete("/:id", controller.deleteJob);
+router.put("/:id",auth,controller.updateJobs);
+router.delete("/:id",auth, controller.deleteJob);
 router.get("/:id",controller.jobById);
 
 module.exports=router;
