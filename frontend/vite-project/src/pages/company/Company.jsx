@@ -74,7 +74,7 @@ export default function Company(){
                         This action cannot be undone.
                     </p>
                     <div className="d-flex gap-2">
-                        <button btn btn-sm btn-danger
+                        <button className="btn btn-sm btn-danger"
                     onClick={async()=>{
                         try{
                             await axios.delete(`http://localhost:4002/companies/${companyId}`);

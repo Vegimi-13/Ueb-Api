@@ -10,6 +10,7 @@ import CreateCategory from "./pages/admin/CreateCategory";
 import Location from "./pages/admin/Location";
 import Company from "./pages/company/Company";
 import Jobs from "./pages/company/Job";
+import OpenApplications from "./pages/company/OpenApplications";
 import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -87,6 +88,7 @@ function App() {
     <Route index element={<CompanyDashboard />} />
     <Route path="registerCompany" element={<Company/>}/>
     <Route path="jobs" element={<Jobs/>}/>
+    <Route path="openApplications" element={<OpenApplications/>}/>
     
   </Route>
 

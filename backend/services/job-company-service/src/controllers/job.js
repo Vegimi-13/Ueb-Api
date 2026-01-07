@@ -122,6 +122,7 @@ exports.updateJobs=async(req,res)=>{
         });
         res.json(updated);
     }catch(err){
+        console.log("Error updating job:", err);
         res.status(500).json({ error: err.message });
     }
 }
@@ -149,6 +150,7 @@ exports.deleteJob = async (req, res) => {
 
     res.json({ message: "Job deleted" });
   } catch (err) {
+    console.log("Error deleting job",err);
     res.status(500).json({ error: err.message });
   }
 };

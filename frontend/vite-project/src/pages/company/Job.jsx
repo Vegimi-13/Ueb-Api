@@ -14,8 +14,7 @@ export default function Jobs(){
         categoryId: "",
         locationId: ""
     });
-    const [editingJob,setEditingJob]=useState(null);
-    const [showEditModal,setShowEditModal]=useState(false);
+    
     const [categories,setCategories]=useState([]);
     const [locations, setLocations]=useState([]);
 
@@ -167,7 +166,7 @@ export default function Jobs(){
 
     <div className="col-md-12">
       <label htmlFor="description" className="form-label">Description</label>
-      <input
+      <textarea
         type="text"
         className="form-control form-control-sm"
         id="description"
