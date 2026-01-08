@@ -1,29 +1,29 @@
 export const roles = {
-  admin: {
+  ADMIN: {
     menu: [
       { label: "Dashboard", path: "/admin", icon: "bi-speedometer2" },
-      { label: "Manage Users", path: "/admin/users",  icon: "bi-people" },
+      { label: "Manage Users", path: "/admin/users", icon: "bi-people" },
       { label: "Job Category", path: "/admin/category", icon: "bi bi-bookmarks-fill" },
-      { label: "Job Location", path: "/admin/location" , icon: "bi bi-geo-alt-fill"},
-      { label: "Applications", path: "/admin/applications",icon: "bi-file-earmark-text"}
+      { label: "Job Location", path: "/admin/location", icon: "bi bi-geo-alt-fill" },
+      { label: "Applications", path: "/admin/applications", icon: "bi-file-earmark-text" }
     ],
   },
-  candidate: {
+  CANDIDATE: {
     menu: [
-        { label: "Dashboard", path: "/candidate" , icon: "bi-speedometer2"},
-        { label: "My Profile", path: "/candidate/profile", icon:  "bi-person" },
-        { label: "My Job Applications", path: "/candidate/candidateApplications" , icon: "bi-ui-radios"},
-        { label: "Search Jobs", path: "/candidate/searchJobsByCandidate", icon: "bi-file-earmark-plus" }
+      { label: "Dashboard", path: "/candidate", icon: "bi-speedometer2" },
+      { label: "My Profile", path: "/candidate/profile", icon: "bi-person" },
+      { label: "My Job Applications", path: "/candidate/candidateApplications", icon: "bi-ui-radios" },
+      { label: "Search Jobs", path: "/candidate/searchJobsByCandidate", icon: "bi-file-earmark-plus" }
     ],
   },
-  company: {
+  EMPLOYER: {
     menu: [
-        { label: "Dashboard", path: "/company" ,  icon: "bi-speedometer2"},
-        { label: "Profile", path: "/company/profile" },
-        { label: "Register Company", path: "/company/registerCompany" },
-        
-        { label: "Create Jobs", path: "/company/jobs" },
-        { label: "Open Job Applications", path: "/company/openApplications" },
+      { label: "Dashboard", path: "/company", icon: "bi-speedometer2" },
+      { label: "Profile", path: "/company/profile" },
+      { label: "Register Company", path: "/company/registerCompany" },
+
+      { label: "Create Jobs", path: "/company/jobs" },
+      { label: "Open Job Applications", path: "/company/openApplications" },
     ],
   },
 };

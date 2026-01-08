@@ -1,18 +1,26 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { roles } from "../config/roles";
+import useAuth from "../auth/useAuth";
 
 //add other sidebar links at the config/roles.js file
 
 export default function Sidebar({ role }) {
   const [collapsed, setCollapsed] = useState(false);
   const menu = roles[role]?.menu || [];
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+  console.log("menuy", menu)
 
   return (
     <aside
-      className={`bg-dark text-white d-flex flex-column vh-100 ${
-        collapsed ? "sidebar-collapsed" : ""
-      }`}
+      className={`bg-dark text-white d-flex flex-column vh-100 ${collapsed ? "sidebar-collapsed" : ""
+        }`}
       style={{
         width: collapsed ? "80px" : "260px",
         transition: "width 0.3s",
@@ -37,8 +45,7 @@ export default function Sidebar({ role }) {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `nav-link d-flex align-items-center ${
-                    isActive ? "active bg-primary" : "text-white"
+                  `nav-link d-flex align-items-center ${isActive ? "active bg-primary" : "text-white"
                   }`
                 }
               >
@@ -52,7 +59,10 @@ export default function Sidebar({ role }) {
 
       {/* Footer */}
       <div className="p-3 border-top border-secondary">
-        <button className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center">
+        <button
+          className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center"
+          onClick={handleLogout}
+        >
           <i className="bi bi-box-arrow-right" />
           {!collapsed && <span className="ms-2">Logout</span>}
         </button>

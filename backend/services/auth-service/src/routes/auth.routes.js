@@ -13,6 +13,7 @@ router.post("/logout", controller.logout);
 
 // -------- PROTECTED ROUTES --------
 router.get("/me", auth, controller.me);
+router.patch("/profile", auth, controller.updateProfile);
 
 
 router.get("/admin-test", auth, role("ADMIN"), (req, res) => {

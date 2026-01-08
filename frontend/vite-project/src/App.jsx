@@ -19,13 +19,17 @@ import AddApplicationByAdmin from "./pages/admin/AddApplicationByAdmin";
 import Applications from "./pages/admin/Applications";
 import SearchJobsByCandidate from "./pages/candidate/SearchJobsByCandidate";
 import CandidateApplications from "./pages/candidate/CandidateApplications";
-
+import { AuthProvider } from "./auth/AuthContext";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import NotFound from "./pages/NotFound";
+import Profile from "./pages/User/Profile";
 
 
 function App() {
   return (
-    <>
-     <ToastContainer
+    <AuthProvider >
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar
@@ -33,67 +37,74 @@ function App() {
         closeOnClick
         pauseOnHover
       />
-   <Routes>
+      <Routes>
 
-  {/* PUBLIC ROUTES */}
-  <Route element={<PublicLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/searchJobs" element={<SearchJobs />} />
-        
-      </Route>
+        {/* PUBLIC ROUTES */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/searchJobs" element={<SearchJobs />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-  
- 
+        </Route>
 
-  {/* ADMIN */}
-  <Route
-    path="/admin/*"
-    element={
-      <ProtectedRoute allowed={["admin"]}>
-        <DashboardLayout />
-      </ProtectedRoute>
-    }
-  >
-    <Route index element={<AdminDashboard />} />
-    <Route path="category" element={<CreateCategory/>}/>
-    <Route path="location" element={<Location/>}/>
-    <Route path="applications" element={<Applications/>}/>
-    <Route path="addApplicationByAdmin" element={<AddApplicationByAdmin/>}/>
-  </Route>
 
-  {/* CANDIDATE */}
-  <Route
-    path="/candidate/*"
-    element={
-      <ProtectedRoute allowed={["candidate"]}>
-        <DashboardLayout />
-      </ProtectedRoute>
-    }
-  >
-    <Route index element={<CandidateDashboard />} />
-       <Route path="addApplication/:jobId" element={<AddApplication/>}/>
-       <Route path="searchJobsByCandidate" element={<SearchJobsByCandidate/>}/>
-       <Route path="candidateApplications" element={<CandidateApplications/>}/>
-    </Route>
 
-  {/* COMPANY */}
-  <Route
-    path="/company/*"
-    element={
-      <ProtectedRoute allowed={["company"]}>
-        <DashboardLayout />
-      </ProtectedRoute>
-    }
-  >
-    <Route index element={<CompanyDashboard />} />
-    <Route path="registerCompany" element={<Company/>}/>
-    <Route path="jobs" element={<Jobs/>}/>
-    <Route path="openApplications" element={<OpenApplications/>}/>
-    
-  </Route>
 
-</Routes>
-</>
+        {/* ADMIN */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute allowed={["ADMIN"]}>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="category" element={<CreateCategory />} />
+          <Route path="location" element={<Location />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="applications" element={<Applications />} />
+          <Route path="addApplicationByAdmin" element={<AddApplicationByAdmin />} />
+        </Route>
+
+        {/* CANDIDATE */}
+        <Route
+          path="/candidate/*"
+          element={
+            <ProtectedRoute allowed={["CANDIDATE"]}>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<CandidateDashboard />} />
+          <Route path="addApplication/:jobId" element={<AddApplication />} />
+          <Route path="searchJobsByCandidate" element={<SearchJobsByCandidate />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="candidateApplications" element={<CandidateApplications />} />
+        </Route>
+
+        {/* COMPANY */}
+        <Route
+          path="/company/*"
+          element={
+            <ProtectedRoute allowed={["EMPLOYER"]}>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<CompanyDashboard />} />
+          <Route path="registerCompany" element={<Company />} />
+          <Route path="jobs" element={<Jobs />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="openApplications" element={<OpenApplications />} />
+
+        </Route>
+
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AuthProvider>
 
   );
 }
