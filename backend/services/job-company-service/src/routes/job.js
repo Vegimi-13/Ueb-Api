@@ -7,6 +7,17 @@ const requireRole = require("../middleware/role.middleware");
 
 
 router.post("/",auth,requireRole("EMPLOYER","ADMIN"),controller.createJob);
+
+/**
+ * @swagger
+ * /jobs:
+ *   get:
+ *     summary: Get all jobs
+ *     tags: [Jobs]
+ *     responses:
+ *       200:
+ *         description: List of all jobs
+ */
 router.get("/",controller.getAllJobs);
 router.put("/:id",auth,controller.updateJobs);
 router.delete("/:id",auth, controller.deleteJob);

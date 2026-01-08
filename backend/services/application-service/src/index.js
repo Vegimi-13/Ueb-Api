@@ -11,6 +11,11 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+// Swagger Documentation
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpecs = require("./config/swagger");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 //app.use(authMiddleware);
 
 const PORT = process.env.PORT || 4003;

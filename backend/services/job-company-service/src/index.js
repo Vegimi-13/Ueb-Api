@@ -12,6 +12,11 @@ app.use(
 
 app.use(express.json());
 
+// Swagger Documentation
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpecs = require("./config/swagger");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
 app.use("/categories",require("./routes/category"));
 app.use("/locations",require("./routes/location"));
 app.use("/jobs",require("./routes/job"));
