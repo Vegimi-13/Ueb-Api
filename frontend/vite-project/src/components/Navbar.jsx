@@ -1,92 +1,106 @@
 import { Link } from "react-router-dom";
 import useAuth from "../auth/useAuth";
+import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <nav
-      className="navbar navbar-expand-lg navbar-light bg-light shadow-sm"
-      style={{ padding: "1.5rem 2rem" }}
-    >
-      <div className="container-fluid">
-        <Link className="navbar-brand fw-bold fs-3" to="/">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-2">
+      <div className="container">
+        <Link className={`navbar-brand fw-bold fs-3 ${styles.brand}`} to="/">
           FindJob
         </Link>
-        <div className="d-flex ms-auto gap-3">
-          {!isAuthenticated ? (
-            <>
-              <Link className="btn btn-outline-primary px-4 fw-semibold" to="/register">
-                Register
-              </Link>
-              <Link className="btn btn-primary px-4 fw-semibold" to="/login">
-                Login
-              </Link>
-            </>
-          ) : (
-            <div className="dropdown">
-              <button
-                className="btn border-0 shadow-none dropdown-toggle fw-medium"
-                style={{ backgroundColor: 'transparent' }}
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+        
+        <button 
+          className="navbar-toggler" 
+          type="button" 
+          data-bs-toggle="collapse" 
+          data-bs-target="#navbarNav" 
+          aria-controls="navbarNav" 
+          aria-expanded="false" 
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <div className="d-flex ms-auto gap-3 align-items-center">
+            {!isAuthenticated ? (
+              <>
+                <Link className={styles.outlineBtn} to="/register">
+                  Register
+                </Link>
+                <Link className={styles.primaryBtn} to="/login">
+                  Login
+                </Link>
+              </>
+            ) : (
+              <div className="dropdown">
+                <button
+                  className={`btn shadow-none dropdown-toggle d-flex align-items-center gap-2 ${styles.userBtn}`}
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
                 >
-                {user?.firstName || "User"}
-              </button>
+                  <div className={styles.userAvatar}>
+                    {user?.firstName?.charAt(0) || "U"}
+                  </div>
+                  <span className="fw-medium text-dark">{user?.firstName || "User"}</span>
+                </button>
 
-              <ul className="dropdown-menu dropdown-menu-end shadow">
+                <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                  <li className="px-3 py-2 border-bottom">
+                    <p className="mb-0 fw-bold text-dark">
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <small className="text-muted">{user?.email}</small>
+                  </li>
 
-                <li className="px-3 py-2 border-bottom">
-                  <p className="mb-0 fw-bold">
-                    {user?.firstName} {user?.lastName}
-                  </p>
-                  <small className="text-muted">{user?.email}</small>
-                </li>
+                  <li>
+                    <Link
+                      className="dropdown-item py-2"
+                      to={
+                        user.role === "ADMIN"
+                          ? "/admin"
+                          : user.role === "EMPLOYER"
+                            ? "/company"
+                            : "/candidate"
+                      }
+                    >
+                      <i className="bi bi-speedometer2 me-2 text-primary"></i> Dashboard
+                    </Link>
+                  </li>
 
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    to={
-                      user.role === "ADMIN"
-                        ? "/admin"
-                        : user.role === "EMPLOYER"
-                          ? "/company"
-                          : "/candidate"
-                    }
-                  >
-                    <i className="bi bi-speedometer2 me-2"></i> Dashboard
-                  </Link>
-                </li>
+                  <li>
+                    <Link
+                      className="dropdown-item py-2"
+                      to={
+                        user.role === "ADMIN"
+                          ? "/admin/profile"
+                          : user.role === "EMPLOYER"
+                            ? "/company/profile"
+                            : "/candidate/profile"
+                      }
+                    >
+                      <i className="bi bi-person me-2 text-primary"></i> My Profile
+                    </Link>
+                  </li>
 
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    to={
-                      user.role === "ADMIN"
-                        ? "/admin/profile"
-                        : user.role === "EMPLOYER"
-                          ? "/company/profile"
-                          : "/candidate/profile"
-                    }
-                  >
-                    <i className="bi bi-person me-2"></i> My Profile
-                  </Link>
-                </li>
+                  <li><hr className="dropdown-divider" /></li>
 
-                <li><hr className="dropdown-divider" /></li>
-
-                <li>
-                  <button
-                    className="dropdown-item text-danger"
-                    onClick={logout}
-                  >
-                    <i className="bi bi-box-arrow-right me-2"></i> Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
+                  <li>
+                    <button
+                      className="dropdown-item text-danger py-2"
+                      onClick={logout}
+                    >
+                      <i className="bi bi-box-arrow-right me-2"></i> Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>
