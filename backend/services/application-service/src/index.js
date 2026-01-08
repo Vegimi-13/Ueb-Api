@@ -8,7 +8,11 @@ const cors = require('cors');
 
 const express = require("express");
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // your React dev server URL
+  methods: ["GET","POST","PATCH","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"], 
+}));
 
 app.use(express.json());
 
@@ -20,7 +24,11 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 const PORT = process.env.PORT || 4003;
 const applicationRoutes = require("./routes/application.routes");
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
 app.use("/", applicationRoutes);
+
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Application Service listening on port ${PORT}`);

@@ -13,7 +13,8 @@ export const roles = {
       { label: "Dashboard", path: "/candidate", icon: "bi-speedometer2" },
       { label: "My Profile", path: "/candidate/profile", icon: "bi-person" },
       { label: "My Job Applications", path: "/candidate/candidateApplications", icon: "bi-ui-radios" },
-      { label: "Search Jobs", path: "/candidate/searchJobsByCandidate", icon: "bi-file-earmark-plus" }
+      { label: "Search Jobs", path: "/", icon: "bi-file-earmark-plus" },
+
     ],
   },
   EMPLOYER: {

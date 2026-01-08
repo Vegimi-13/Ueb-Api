@@ -1,105 +1,211 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
+export default function Applications() {
+  const [applications, setApplications] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedApp, setSelectedApp] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
+  useEffect(() => {
+    fetchApplications();
+    fetchStatuses();
+  }, []);
 
-export default function Applications(){
-
-    const [applications,setApplications] = useState([]);
-
-    useEffect(() => {
-  axios.get("http://localhost:4003/applications")
-    .then(async (res) => {
+  const fetchApplications = async () => {
+    try {
+      const res = await axios.get("http://localhost:4003/applications", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+      });
       const apps = res.data;
 
-      // Fetch jobs for each application
-      const appsWithJobs = await Promise.all(
+      // Fetch candidate and job details for each application
+      const appsWithDetails = await Promise.all(
         apps.map(async (app) => {
           const jobRes = await axios.get(`http://localhost:4002/jobs/${app.job_id}`);
-          return {
-            ...app,
-            job: jobRes.data
-          };
+          const userRes = await axios.get(`http://localhost:4001/auth/users/${app.candidate_id}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+          });
+          return { ...app, job: jobRes.data, candidate: userRes.data.user };
         })
       );
-      console.log(appsWithJobs);
-      setApplications(appsWithJobs);
-    })
-    .catch((err) => {
-      console.error("Error fetching applications", err);
-    });
-}, []);
-   
-  function deleteApplication(id){
-     axios
-    .delete(`http://localhost:4003/applications/${id}`,)
-    .then(() => {
-      // Remove deleted application from state
-      setApplications(applications.filter(app => app.application_id !== id));
-    })
-    .catch(err => {
-      console.error("Error deleting application", err);
-    });
+      setApplications(appsWithDetails);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch applications");
+    }
+  };
+
+  const fetchStatuses = async () => {
+    try {
+      const res = await axios.get("http://localhost:4003/getStatus");
+      setStatuses(res.data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch statuses");
+    }
+  };
+
+  const handleEditClick = (app) => {
+    setSelectedApp(app);
+    setSelectedStatus(app.status?.status_id || "");
+    setShowModal(true);
+  };
+   function closeModal() {
+    setShowModal(false);
+    setSelectedApp(null);
+    setResumeFile(null);
   }
 
-    return(
-      <>
+  const handleStatusUpdate = async () => {
+    if (!selectedStatus) return toast.error("Please select a status");
 
-        <h1>Applications</h1>
-          <td>
-            <Link to='/admin/addApplicationByAdmin'>
-                <button class="btn btn-primary btn-sm" >Add New Application</button>  
-            </Link>
-          </td>
+    try {
+      const res = await axios.patch(
+        `http://localhost:4003/updateStatus/${selectedApp.application_id}`,
+        { statusId: selectedStatus },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` } }
+      );
 
-         <table className="table table-bordered mt-4">
-                    <thead>
-                     <tr>
-                        <th scope="col">Application_ID</th>
-                        <th scope="col">Candidate</th>
-                        <th scope="col">Job</th>
-                        <th scope="col">Company</th>
-                        <th scope="col">Resume Link</th>
-                        <th scope="col">Applied at</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                     </tr>
-                    </thead>
-                    
-                    <tbody>
-                         {applications.length > 0 ? (
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.application_id === selectedApp.application_id
+            ? { ...app, status: res.data.updatedApp.status }
+            : app
+        )
+      );
+
+      toast.success("Status updated successfully!");
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update status");
+    }
+  };
+
+  const deleteApplication = (id) => {
+    axios
+      .delete(`http://localhost:4003/applications/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+      })
+      .then(() => {
+        setApplications(applications.filter((app) => app.application_id !== id));
+        toast.success("Application deleted successfully!");
+      })
+      .catch(() => toast.error("Deleting application failed!"));
+  };
+
+  return (
+    <>
+      <h1>Applications</h1>
+      <table className="table table-bordered mt-4">
+        <thead>
+          <tr>
+            <th>Application_ID</th>
+            <th>Candidate</th>
+            <th>Job</th>
+            <th>Company</th>
+            <th>Resume Link</th>
+            <th>Applied at</th>
+            <th>Status</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {applications.length > 0 ? (
             applications.map((app) => (
               <tr key={app.application_id}>
                 <td>{app.application_id}</td>
-                <td>{app.candidate_id}</td>
-                <td>{app.job.title}</td>
-                <td>{app.job.company.name}</td>
+                <td>{app.candidate?.email || "N/A"}</td>
+                <td>{app.job?.title}</td>
+                <td>{app.job?.company?.name}</td>
                 <td>
-                  <a href={app.resume_link} target="_blank" rel="noreferrer">
+                  <a href={`http://localhost:4003/uploads/${app.resume_path}`} target="_blank" rel="noreferrer">
                     View Resume
                   </a>
                 </td>
                 <td>{new Date(app.applied_at).toLocaleString()}</td>
-                <td>{app.status.name}</td>
                 <td>
-    <button class="btn btn-primary btn-sm">Edit</button>
-    <button class="btn btn-danger btn-sm" onClick={() => deleteApplication(app.application_id)}>Delete</button>
-</td>
-
+    <span
+      style={{
+        fontWeight: "bold",
+        color:
+          app.status?.name === "Applied"
+            ? "blue"
+            : app.status?.name === "Interview Scheduled"
+            ? "orange"
+            : app.status?.name === "Hired"
+            ? "green"
+            : app.status?.name === "Rejected"
+            ? "red"
+            : "black",
+      }}
+    >
+      {app.status?.name || "N/A"}
+    </span>
+  </td>
+                <td>
+                  <i className="bi bi-pencil-square" style={{ cursor: "pointer" }} onClick={() => handleEditClick(app)} />
+                </td>
+                <td>
+                  <i className="bi bi-trash3-fill" style={{ cursor: "pointer" }} onClick={() => deleteApplication(app.application_id)} />
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center">
-                No applications found
-              </td>
+              <td colSpan="9" className="text-center">No applications found</td>
             </tr>
           )}
-                    </tbody>
-            </table>
+        </tbody>
+      </table>
 
+      {/* Status Edit Modal */}
+      {/* Status Edit Modal */}
+{showModal && (
+  <div className="modal fade show d-block" style={{ background: "#00000080" }}>
+    <div className="modal-dialog">
+      <div className="modal-content">
+        {/* Header */}
+        <div className="modal-header">
+          <h5 className="modal-title">Edit Status</h5>
+          <button className="btn-close" onClick={closeModal}></button>
+        </div>
 
- </>
-    );
-};
+        {/* Body */}
+        <div className="modal-body">
+          <label className="form-label">Select New Status</label>
+          <select
+            className="form-select"
+            value={selectedStatus || ""}
+            onChange={(e) => setSelectedStatus(Number(e.target.value))}
+          >
+            <option value="">Choose status</option>
+            {statuses.map((status) => (
+              <option key={status.status_id} value={status.status_id}>
+                {status.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Footer */}
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={closeModal}>
+            Cancel
+          </button>
+          <button className="btn btn-success" onClick={handleStatusUpdate}>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+    </>
+  );
+}

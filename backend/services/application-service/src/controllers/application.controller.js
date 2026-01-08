@@ -1,39 +1,50 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+const path = require("path");
 const { application } = require("express");
+const { uploadResume } = require("../middleware/uploadResume.js");
 
 module.exports = {
-    async addApplications (req,res) {
-  try{
-    const jobId=req.body.jobId;
-    const candidateId=req.user.id;
-    console.log(candidateId);
-    const resumeLink = req.body.resumeLink;
-    
-    const status = await prisma.applicationStatus.findFirst({
-      where:{
-        name:'Applied'
+    async addApplications(req, res) {
+    try {
+      const jobId = req.body.jobId;
+      const candidateId = req.user.id;
+      console.log(candidateId);
+
+      // Check if a file was uploaded (assumes middleware like multer is used)
+      if (!req.file) {
+        return res.status(400).json({ error: "Resume is required" });
       }
-    });
 
-    const addApp = await prisma.applications.create({
-      data:{
-        job_id:jobId,
-        candidate_id:candidateId,
-        status_id:status.status_id,
-        resume_link:resumeLink,
-        applied_at:new Date(),
-      }
-    });
+      // Get the file path to store in DB
 
 
-    res.json(addApp);
+const resumePath = req.file.path.replace(/\\/g, "/").replace(/^uploads\//, ""); 
 
-  } catch(error) {
-    res.status(500).json({ error: error.message });
-  }
- },
+
+      // Get the "Applied" status
+      const status = await prisma.applicationStatus.findFirst({
+        where: {
+          name: "Applied",
+        },
+      });
+
+      // Create application in DB
+      const addApp = await prisma.applications.create({
+        data: {
+          job_id: Number(jobId),
+          candidate_id: candidateId,
+          status_id: status.status_id,
+          resume_path: resumePath,
+          applied_at: new Date(),
+        },
+      });
+
+      res.json(addApp);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
 
  async applications (req, res) { 
 
@@ -127,7 +138,79 @@ async candidateApplications (req, res) {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+},
+// controllers/application.controller.js
+async editResume(req, res) {
+  try {
+    const id = Number(req.params.id);
+    const candidateId = req.user.id;
+
+    // Find the application
+    const application = await prisma.applications.findUnique({
+      where: { application_id: id },
+    });
+
+    if (!application) {
+      return res.status(404).json({ error: "Application not found" });
+    }
+
+    if (application.candidate_id !== candidateId) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    // Make sure a file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ error: "Resume file is required" });
+    }
+
+    const resumePath = req.file.path.replace(/\\/g, "/").replace(/^uploads\//, "");
+
+    // Update only the resume_path
+    const updatedApplication = await prisma.applications.update({
+      where: { application_id: id },
+      data: { resume_path: resumePath },
+    });
+
+    res.json({
+      message: "Resume updated successfully",
+      updatedApplication,
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+},
+// In controllers/application.controller.js
+async updateStatus(req, res) {
+  try {
+    const id = Number(req.params.id);
+    const { statusId } = req.body;
+
+    // Validate application exists
+    const application = await prisma.applications.findUnique({
+      where: { application_id: id },
+    });
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    // Update status
+    const updatedApp = await prisma.applications.update({
+      where: { application_id: id },
+      data: { status_id: statusId },
+      include: { status: true },
+    });
+
+    res.json({
+      message: 'Status updated successfully',
+      updatedApp,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
+
+
 
 };
 

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-/* 
+
 module.exports = function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
 
@@ -18,11 +18,12 @@ module.exports = function authMiddleware(req, res, next) {
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
-*/
+
+/*
 module.exports = (req, res, next) => {
   req.user = {
     id: 1,          // this will be the ownerId
     role: "ADMIN" // matches requireRole in your routes
   };
   next();
-};
+};*/

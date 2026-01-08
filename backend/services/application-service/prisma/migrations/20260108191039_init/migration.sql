@@ -4,7 +4,7 @@ CREATE TABLE `Applications` (
     `job_id` INTEGER NOT NULL,
     `candidate_id` INTEGER NOT NULL,
     `status_id` INTEGER NOT NULL,
-    `resume_link` VARCHAR(191) NOT NULL,
+    `resume_path` VARCHAR(191) NOT NULL,
     `applied_at` DATETIME(3) NOT NULL,
 
     INDEX `Applications_candidate_id_idx`(`candidate_id`),

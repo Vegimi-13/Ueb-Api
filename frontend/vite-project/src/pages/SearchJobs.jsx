@@ -2,8 +2,18 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../auth/useAuth";
+
 
 export default function SearchJobs() {
+  const [selectedJob, setSelectedJob] = useState(null);
+const [resumeFile, setResumeFile] = useState(null);
+const [uploading, setUploading] = useState(false);
+
+const navigate = useNavigate();
+const { isAuthenticated, loading } = useAuth();
+
 const [jobs, setJobs]=useState([]);
 const [filters,setFilters]=useState({
         search: "",
@@ -70,6 +80,52 @@ const handleClearFilters = () => {
     useEffect(()=>{
         fetchJobs();
     },[]);
+    const handleApplyClick = (job) => {
+  if (!isAuthenticated) {
+    navigate("/login");
+    return;
+  }
+  setSelectedJob(job);
+};
+
+const handleFileChange = (e) => {
+  setResumeFile(e.target.files[0]);
+};
+
+const handleSubmitApplication = async () => {
+  if (!resumeFile) {
+    toast.error("Please upload your resume");
+    return;
+  }
+
+  setUploading(true);
+
+  try {
+    const formData = new FormData();
+    formData.append("resume", resumeFile);
+    formData.append("jobId", selectedJob.id);
+
+    await axios.post(
+      "http://localhost:4003/addApplications",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+
+    toast.success("Application submitted!");
+    setSelectedJob(null);
+    setResumeFile(null);
+    navigate("/candidate/candidateApplications");
+  } catch (err) {
+    toast.error("Application failed. Please try again!");
+  } finally {
+    setUploading(false);
+  }
+};
+
 
    return (
    <div className="container mt-5">
@@ -183,9 +239,65 @@ const handleClearFilters = () => {
           <small>Type: {job.JobType ? job.JobType.replace("_", " ") : "Not specified"}</small>
         </div>
       </div>
-      <Link className="btn btn-primary px-4 mb-3" to="/login">Apply</Link>
+<button
+  className="btn btn-primary px-4 mb-3"
+  onClick={() => handleApplyClick(job)}
+>
+  Apply
+</button>
     </div>
   ))}
+  {selectedJob && (
+  <div
+    className="modal fade show d-block"
+    style={{ background: "rgba(0,0,0,.5)" }}
+  >
+    <div className="modal-dialog">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5>Apply for {selectedJob.title}</h5>
+          <button className="btn-close" onClick={() => setSelectedJob(null)} />
+        </div>
+
+        <div className="modal-body">
+          <p><strong>Company:</strong> {selectedJob.company?.name}</p>
+          <p><strong>Category:</strong> {selectedJob.category?.name}</p>
+          <p><strong>Location:</strong> {selectedJob.location?.name}</p>
+          <p><strong>Salary:</strong> {selectedJob.salary ? `€${selectedJob.salary}` : "Not specified"}</p>
+          <p><strong>Type:</strong> {selectedJob.JobType?.replace("_", " ")}</p>
+          <p><strong>Description:</strong> {selectedJob.description}</p>
+
+          <div className="mb-3">
+            <label className="form-label">Upload Resume (PDF)</label>
+            <input
+              type="file"
+              className="form-control"
+              accept=".pdf"
+              onChange={handleFileChange}
+            />
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          <button
+            className="btn btn-success"
+            disabled={uploading}
+            onClick={handleSubmitApplication}
+          >
+            {uploading ? "Uploading..." : "Submit Application"}
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setSelectedJob(null)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 </div>
 
 
@@ -208,12 +320,7 @@ const handleClearFilters = () => {
             <small>Type: {job.JobType.replace("_", " ")}</small>
           </p>
         </div>
-      </div>
+      )}
     </div>
-  ))}
-</div>*/ 
-
-
-
-  
+  );*/
 }

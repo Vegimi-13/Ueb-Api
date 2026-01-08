@@ -25,6 +25,11 @@ export default function AddApplication() {
       await axios.post("http://localhost:4003/addApplications", {
         jobId: Number(jobId),
         resumeLink
+      },
+    {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
 
       toast.success("Application submitted!");

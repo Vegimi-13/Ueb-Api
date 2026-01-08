@@ -18,7 +18,7 @@ model Applications {
   job_id Int 
   candidate_id Int
   status_id Int
-  resume_link String
+  resume_path String
   applied_at DateTime
 
   

@@ -7,6 +7,7 @@ const controller = require("../controllers/application.controller");
 const router = express.Router();
 const requireRole = require("../middleware/role.middleware");
 const auth = require("../middleware/auth.middleware");
+const { uploadResume } = require("../middleware/uploadResume.js");
 
 
 
@@ -39,7 +40,7 @@ const auth = require("../middleware/auth.middleware");
  *       201:
  *         description: Application submitted successfully
  */
-router.post('/addApplications',auth,requireRole('ADMIN',"CANDIDATE"),controller.addApplications);
+router.post('/addApplications',auth,requireRole("CANDIDATE"),uploadResume.single("resume"),controller.addApplications);
 
 /**
  * @swagger
@@ -119,7 +120,7 @@ router.get('/getStatus',controller.getStatus);
  *       200:
  *         description: Application deleted
  */
-router.delete('/applications/:id',auth,requireRole("ADMIN","EMPLOYER"),controller.deleteById);
+router.delete('/applications/:id',auth,requireRole("ADMIN","EMPLOYER","CANDIDATE"),controller.deleteById);
 
 /**
  * @swagger
@@ -134,7 +135,10 @@ router.delete('/applications/:id',auth,requireRole("ADMIN","EMPLOYER"),controlle
  *         description: Candidate's applications
  */
 router.get('/candidateApplications',auth,requireRole('CANDIDATE'),controller.candidateApplications)
-
+router.patch('/editResume/:id',auth,requireRole('ADMIN','CANDIDATE'),uploadResume.single("resume"),controller.editResume);
+// In application.routes.js
+router.patch('/updateStatus/:id',auth,requireRole('ADMIN', 'EMPLOYER'),controller.updateStatus
+);
 
 
 module.exports = router;

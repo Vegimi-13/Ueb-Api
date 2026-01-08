@@ -32,9 +32,12 @@ export default function Hero() {
                 <Link to="/searchJobs" className={styles.primaryBtn}>
                   Browse Jobs
                 </Link>
-                <Link to={isAuthenticated ? "/company/jobs" : "/register"} className={styles.outlineBtn}>
-                  Post a Job
-                </Link>
+                 {/* Only show Post a Job if user is NOT authenticated */}
+  {!isAuthenticated && (
+    <Link to="/register" className={styles.outlineBtn}>
+      Post a Job
+    </Link>
+  )}
               </div>
 
               <div className={styles.stats}>
