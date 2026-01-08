@@ -58,19 +58,48 @@ exports.createJob = async (req, res) => {
 
 exports.getAllJobs = async (req, res) => {
   try {
+    const { search, categoryId, locationId, minSalary, maxSalary } = req.query;
+
+    const filters = {};
+
+    if (categoryId) filters.categoryId = Number(categoryId);
+    if (locationId) filters.locationId = Number(locationId);
+
+    const min = Number(minSalary);
+    const max = Number(maxSalary);
+
+    if (!Number.isNaN(min) || !Number.isNaN(max)) {
+      filters.salary = {};
+      if (!Number.isNaN(min)) filters.salary.gte = min;
+      if (!Number.isNaN(max)) filters.salary.lte = max;
+    }
+
+    
+  if (search) {
+  filters.title = {
+    contains: search.toLowerCase(),
+  };
+}
+
+
     const jobs = await prisma.job.findMany({
-      orderBy: { createdAt: "desc" },  
+      where: filters,
       include: {
         category: true,
         location: true,
-        company: true
-      }
+        company: true,
+      },
+      orderBy: { createdAt: "desc" },
     });
+
     res.json(jobs);
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("GET /jobs ERROR:", err);
+    res.status(500).json({ message: "Failed to fetch jobs", error: err.message });
   }
 };
+
 
 exports.updateJobs=async(req,res)=>{
     try{
@@ -131,26 +160,34 @@ exports.deleteJob = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!id || isNaN(Number(id))) {
+      return res.status(400).json({ error: "Invalid job ID" });
+    }
+
+    const jobId = Number(id);
+
     const job = await prisma.job.findUnique({
-      where: { id: Number(id) },
+      where: { id: jobId },
       include: { company: true },
     });
 
-    if (!job) {
-      return res.status(404).json({ error: "Job not found" });
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
+
+    if (!job.company) return res.status(400).json({ error: "Job has no company" });
 
     if (job.company.ownerId !== req.user.id) {
       return res.status(403).json({ error: "You do not own this job" });
     }
 
-    await prisma.job.delete({
-      where: { id: Number(id) },
-    });
+    await prisma.job.delete({ where: { id: jobId } });
 
-    res.json({ message: "Job deleted" });
+    res.json({ message: "Job deleted successfully" });
   } catch (err) {
-    console.log("Error deleting job",err);
+    console.error("Error deleting job:", err);
     res.status(500).json({ error: err.message });
   }
 };

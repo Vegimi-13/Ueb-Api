@@ -20,10 +20,14 @@ export default function OpenApplications(){
     const [locations, setLocations]=useState([]);
 
     const [jobs, setJobs]=useState([]);
-    const [jobId, setJobId]=useState(null);
+    
+
+   
 
   const fetchJobs=async()=>{
         try{
+
+            
             const res=await axios.get("http://localhost:4002/jobs");
             setJobs(res.data);
         }catch(err){
