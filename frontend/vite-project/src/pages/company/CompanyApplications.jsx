@@ -1,10 +1,12 @@
 import { useState,useEffect } from "react";
 import axios from "axios";
+import api, { jobApi, appApi } from "../../config/api";
+import useAuth from "../../auth/useAuth";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function CompanyApplications(){
-
+  const { user } = useAuth();
   const [applications,setApplications] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState(null);
@@ -31,48 +33,49 @@ const [searchTerm, setSearchTerm] = useState("");
 
    const fetchApplications = async () => {
   try {
-    const token = localStorage.getItem("accessToken");
-
-    const res = await axios.get("http://localhost:4003/applications", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await appApi.get("/applications");
 
     const apps = res.data;
 
     const appsWithDetails = await Promise.all(
       apps.map(async (app) => {
-        const [jobRes, userRes] = await Promise.all([
-          axios.get(`http://localhost:4002/jobs/jobByIdAndCompany/${app.job_id}`),
-          axios.get(
-            `http://localhost:4001/auth/users/${app.candidate_id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          ),
-        ]);
+        try {
+          const [jobRes, userRes] = await Promise.all([
+            jobApi.get(`/jobs/jobByIdAndCompany/${app.job_id}`),
+            api.get(
+              `/auth/users/${app.candidate_id}`
+            ),
+          ]);
 
-        return {
-          ...app,
-          job: jobRes.data,
-          candidate: userRes.data.user, // contains name/email
-        };
+          return {
+            ...app,
+            job: jobRes.data,
+            candidate: userRes.data.user, // contains name/email
+          };
+        } catch (err) {
+          // Skip applications for jobs the user doesn't own
+          console.log(`Skipping job ${app.job_id} - not owned by user`);
+          return null;
+        }
       })
     );
-    console.log(appsWithDetails)
-    setApplications(appsWithDetails);
+    
+    // Filter out null entries (jobs not owned by user)
+    const validApplications = appsWithDetails.filter((app) => app !== null);
+    
+    console.log(validApplications)
+    setApplications(validApplications);
   } catch (err) {
     console.error(err);
     toast.error("Failed to fetch applications");
   }
 };
-  useEffect(() => {
-  fetchApplications();
-}, []);
+
 
    
   function deleteApplication(id){
-     axios
-    .delete(`http://localhost:4003/applications/${id}`,{
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-      })
+     appApi
+    .delete(`/applications/${id}`)
     .then(() => {
       // Remove deleted application from state
       setApplications(applications.filter(app => app.application_id !== id));
@@ -85,7 +88,7 @@ const [searchTerm, setSearchTerm] = useState("");
   }
   const fetchStatuses = async () => {
     try {
-      const res = await axios.get("http://localhost:4003/getStatus");
+      const res = await appApi.get("/getStatus");
       setStatuses(res.data);
     } catch (err) {
       console.error(err);
@@ -101,17 +104,15 @@ const [searchTerm, setSearchTerm] = useState("");
    function closeModal() {
     setShowModal(false);
     setSelectedApp(null);
-    setResumeFile(null);
   }
 
   const handleStatusUpdate = async () => {
     if (!selectedStatus) return toast.error("Please select a status");
 
     try {
-      const res = await axios.patch(
-        `http://localhost:4003/updateStatus/${selectedApp.application_id}`,
-        { statusId: selectedStatus },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` } }
+      const res = await appApi.patch(
+        `/updateStatus/${selectedApp.application_id}`,
+        { statusId: selectedStatus }
       );
 
       setApplications((prev) =>

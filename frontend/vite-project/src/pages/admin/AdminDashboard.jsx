@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../../config/api";
-import axios from "axios";
+import api, { jobApi, appApi } from "../../config/api";
 import styles from "./AdminDashboard.module.css";
 
 export default function AdminDashboard() {
@@ -25,15 +24,15 @@ export default function AdminDashboard() {
       const totalUsers = usersRes.data.length;
 
       // Fetch jobs
-      const jobsRes = await axios.get("http://localhost:4002/jobs");
+      const jobsRes = await jobApi.get("/jobs");
       const totalJobs = jobsRes.data.length;
 
       // Fetch companies
-      const companiesRes = await axios.get("http://localhost:4002/companies");
+      const companiesRes = await jobApi.get("/companies");
       const totalCompanies = companiesRes.data.length;
 
       // Fetch applications
-      const applicationsRes = await axios.get("http://localhost:4003/applications");
+      const applicationsRes = await appApi.get("/applications");
       const totalApplications = applicationsRes.data.length;
 
       setMetrics({
