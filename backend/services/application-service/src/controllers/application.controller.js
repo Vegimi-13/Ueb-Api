@@ -208,8 +208,31 @@ async updateStatus(req, res) {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+},
 
+async companyApplications (req, res){
+  try {
+    // Assuming your auth middleware adds user info to req.user
+    const companyId = req.user.companyId; // get company ID from token
+
+    // Fetch applications for this company's jobs, including job and candidate info
+    const applications = await prisma.applications.findMany({
+      where: {
+        job: { companyId: companyId }
+      },
+      include: {
+        job: true, // include job details
+        candidate: true,
+        status: true // include candidate details
+      }
+    });
+
+    res.json(applications);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch applications" });
+  }
+},
 
 
 };

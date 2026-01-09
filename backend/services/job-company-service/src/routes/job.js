@@ -22,5 +22,6 @@ router.get("/",controller.getAllJobs);
 router.put("/:id",auth,controller.updateJobs);
 router.delete("/:id",auth, controller.deleteJob);
 router.get("/:id",controller.jobById);
+router.get('/jobByIdAndCompany/:id',auth,requireRole('EMPLOYER'),controller.jobByIdAndCompany);
 
 module.exports=router;

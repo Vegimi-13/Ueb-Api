@@ -174,7 +174,7 @@ router.patch("/profile", auth, controller.updateProfile);
 router.get("/admin-test", auth, role("ADMIN"), (req, res) => {
   res.json({ message: "Welcome ADMIN 👑" });
 });
-router.get("/users/:id", auth, role("ADMIN"), controller.getUserById); 
+router.get("/users/:id", auth, role("ADMIN","EMPLOYER"), controller.getUserById); 
 
 // EMPLOYER only
 router.get("/employer-test", auth, role("EMPLOYER"), (req, res) => {

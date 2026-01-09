@@ -25,6 +25,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/User/Profile";
+import CompanyApplications from "./pages/company/CompanyApplications";
 
 
 function App() {
@@ -99,6 +100,7 @@ function App() {
           <Route path="jobs" element={<Jobs />} />
           <Route path="profile" element={<Profile />} />
           <Route path="openApplications" element={<OpenApplications />} />
+          <Route path="companyApplications" element={<CompanyApplications/>}/>
 
         </Route>
 

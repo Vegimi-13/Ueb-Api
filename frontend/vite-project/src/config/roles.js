@@ -22,9 +22,10 @@ export const roles = {
       { label: "Dashboard", path: "/company", icon: "bi-speedometer2" },
       { label: "Profile", path: "/company/profile" },
       { label: "Register Company", path: "/company/registerCompany" },
-
       { label: "Create Jobs", path: "/company/jobs" },
       { label: "Open Job Applications", path: "/company/openApplications" },
+      { label: "Applications", path: "/company/companyApplications" },
+
     ],
   },
 };

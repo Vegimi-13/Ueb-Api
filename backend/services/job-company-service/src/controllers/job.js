@@ -212,4 +212,28 @@ exports.jobById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.jobByIdAndCompany = async (req, res) => {
+  try {
+    const jobId = Number(req.params.id);
+    const ownerId = req.user.id;
+    const job = await prisma.job.findFirst({
+      where: { id:jobId,
+        company: {
+          ownerId: ownerId
+        },
+       },
+      
+      include: {
+        company: true,
+        category: true,
+        location: true
+      }
+    });
 
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

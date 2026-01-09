@@ -139,6 +139,7 @@ router.patch('/editResume/:id',auth,requireRole('ADMIN','CANDIDATE'),uploadResum
 // In application.routes.js
 router.patch('/updateStatus/:id',auth,requireRole('ADMIN', 'EMPLOYER'),controller.updateStatus
 );
+router.get('/companyApplications',auth,requireRole('EMPLOYER'),controller.companyApplications);
 
 
 module.exports = router;
