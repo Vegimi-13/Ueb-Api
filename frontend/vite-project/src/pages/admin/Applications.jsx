@@ -8,11 +8,28 @@ export default function Applications() {
   const [showModal, setShowModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   useEffect(() => {
     fetchApplications();
     fetchStatuses();
   }, []);
+
+  const filteredApplications = applications.filter((app) => {
+  const term = searchTerm.toLowerCase();
+
+  const email = app.candidate?.email?.toLowerCase() || "";
+  const jobTitle = app.job?.title?.toLowerCase() || "";
+  const companyName = app.job?.company?.name?.toLowerCase() || "";
+
+  return (
+    email.includes(term) ||
+    jobTitle.includes(term) ||
+    companyName.includes(term)
+  );
+});
+
 
   const fetchApplications = async () => {
     try {
@@ -100,6 +117,16 @@ export default function Applications() {
   return (
     <>
       <h1>Applications</h1>
+      <div className="mb-3">
+  <input
+    type="text"
+    className="form-control"
+    placeholder="Search by candidate email, job title or company..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+</div>
+
       <table className="table table-bordered mt-4">
         <thead>
           <tr>
@@ -115,8 +142,8 @@ export default function Applications() {
           </tr>
         </thead>
         <tbody>
-          {applications.length > 0 ? (
-            applications.map((app) => (
+          {filteredApplications.length > 0 ? (
+  filteredApplications.map((app) => (
               <tr key={app.application_id}>
                 <td>{app.application_id}</td>
                 <td>{app.candidate?.email || "N/A"}</td>
@@ -156,9 +183,12 @@ export default function Applications() {
               </tr>
             ))
           ) : (
-            <tr>
-              <td colSpan="9" className="text-center">No applications found</td>
-            </tr>
+           <tr>
+  <td colSpan="9" className="text-center">
+    No applications found
+  </td>
+</tr>
+
           )}
         </tbody>
       </table>

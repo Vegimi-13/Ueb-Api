@@ -10,12 +10,23 @@ export default function CompanyApplications(){
   const [selectedApp, setSelectedApp] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
     const [statuses, setStatuses] = useState([]);
+const [searchTerm, setSearchTerm] = useState("");
 
 
     useEffect(() => {
   fetchApplications();
   fetchStatuses(); // <-- add this
 }, []);
+
+  const filteredApplications = applications.filter((app) => {
+  const email = app.candidate?.email?.toLowerCase() ?? "";
+  const jobTitle = app.job?.title?.toLowerCase() ?? "";
+  const companyName = app.job?.company?.name?.toLowerCase() ?? "";
+  const term = searchTerm.toLowerCase();
+
+  return email.includes(term) || jobTitle.includes(term) || companyName.includes(term);
+});
+
 
 
    const fetchApplications = async () => {
@@ -124,6 +135,16 @@ export default function CompanyApplications(){
       <>
 
         <h1>Applications</h1>
+        <div className="mb-3">
+  <input
+    type="text"
+    className="form-control"
+    placeholder="Search by candidate, job title or company..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+</div>
+
 
          <table className="table table-bordered mt-4">
                     <thead>
@@ -141,50 +162,46 @@ export default function CompanyApplications(){
                     </thead>
                     
                     <tbody>
-  {applications.map((app) => (
-    <tr key={app.application_id}>
-      <td>{app.application_id}</td>
-      <td>{app.candidate.email ?? "—"}</td>
+  {filteredApplications.map((app) => (
+  <tr key={app.application_id}>
+    <td>{app.application_id}</td>
+    <td>{app.candidate.email ?? "—"}</td>
+    <td>{app.job?.title ?? "—"}</td>
+    <td>{app.job?.company.name ?? "—"}</td>
+    <td>
+      <a href={`http://localhost:4003/uploads/${app.resume_path}`} target="_blank" rel="noreferrer">
+        View Resume
+      </a>
+    </td>
+    <td>{new Date(app.applied_at).toLocaleString()}</td>
+    <td>
+      <span
+        style={{
+          fontWeight: "bold",
+          color:
+            app.status?.name === "Applied"
+              ? "blue"
+              : app.status?.name === "Interview Scheduled"
+              ? "orange"
+              : app.status?.name === "Hired"
+              ? "green"
+              : app.status?.name === "Rejected"
+              ? "red"
+              : "black",
+        }}
+      >
+        {app.status?.name || "N/A"}
+      </span>
+    </td>
+    <td>
+      <i className="bi bi-pencil-square" style={{ cursor: "pointer" }} onClick={() => handleEditClick(app)} />
+    </td>
+    <td>
+      <i className="bi bi-trash3-fill" style={{ cursor: "pointer" }} onClick={() => deleteApplication(app.application_id)} />
+    </td>
+  </tr>
+))}
 
-      <td>{app.job?.title ?? "—"}</td>
-      <td>{app.job?.company.name ?? "—"}</td>
-
-      <td>
-                  <a href={`http://localhost:4003/uploads/${app.resume_path}`} target="_blank" rel="noreferrer">
-                    View Resume
-                  </a>
-                </td>
-
-      <td>{new Date(app.applied_at).toLocaleString()}</td>
-
-      <td>
-    <span
-      style={{
-        fontWeight: "bold",
-        color:
-          app.status?.name === "Applied"
-            ? "blue"
-            : app.status?.name === "Interview Scheduled"
-            ? "orange"
-            : app.status?.name === "Hired"
-            ? "green"
-            : app.status?.name === "Rejected"
-            ? "red"
-            : "black",
-      }}
-    >
-      {app.status?.name || "N/A"}
-    </span>
-  </td>
-
-      <td>
-                  <i className="bi bi-pencil-square" style={{ cursor: "pointer" }} onClick={() => handleEditClick(app)} />
-                </td>
-                <td>
-                  <i className="bi bi-trash3-fill" style={{ cursor: "pointer" }} onClick={() => deleteApplication(app.application_id)} />
-                </td>
-    </tr>
-  ))}
 </tbody>
 
             </table>
