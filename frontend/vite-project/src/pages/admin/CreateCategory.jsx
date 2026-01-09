@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 export default function CreateCategory(){
     
-
+const token = localStorage.getItem("accessToken");
 
   
     const[categoryName, setCategoryName]=useState("");
@@ -19,6 +19,11 @@ const handleSubmit=async(e)=>{
     e.preventDefault();
     try{
         await axios.post(`http://localhost:4002/categories`,  { name: categoryName },
+           {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     }
      
         );
         toast.success("Category created successfully");
@@ -57,7 +62,11 @@ const handleUpdate=async (id)=>{
     try{
         await axios.put(`http://localhost:4002/categories/${id}`,{
             name: editingName,
-        });
+        }, {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     });
 
         setEditingId(null);
         fetchCategories();
@@ -72,7 +81,11 @@ const handleUpdate=async (id)=>{
 }
 const deleteCategories= async (id)=>{
     try{
-        await axios.delete(`http://localhost:4002/categories/${id}`)
+        await axios.delete(`http://localhost:4002/categories/${id}`, {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     })
         fetchCategories();
         toast.success("Category deleted successfully!");
 

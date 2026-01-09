@@ -230,7 +230,7 @@ const handleSubmitApplication = async () => {
       <div className="card-body">
         <h5 className="card-title">{job.title}</h5>
         <h6 className="card-subtitle text-muted mb-2">{job.company.name}</h6>
-        <p className="card-text">{job.description}</p>
+        
 
         <div className="d-flex flex-wrap gap-3 text-muted">
           <small>Salary: {job.salary ? `€${job.salary}` : "Not specified"}</small>

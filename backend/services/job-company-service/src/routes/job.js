@@ -19,9 +19,9 @@ router.post("/",auth,requireRole("EMPLOYER","ADMIN"),controller.createJob);
  *         description: List of all jobs
  */
 router.get("/",controller.getAllJobs);
-router.get("/company",auth,controller.getCompanyJobs);
-router.put("/:id",auth,controller.updateJobs);
-router.delete("/:id",auth, controller.deleteJob);
+router.get("/company",auth,requireRole("EMPLOYER"),controller.getCompanyJobs);
+router.put("/:id",auth,requireRole("EMPLOYER","ADMIN"),auth,controller.updateJobs);
+router.delete("/:id",auth,requireRole("EMPLOYER","ADMIN"),auth, controller.deleteJob);
 router.get("/:id",controller.jobById);
 
 router.get('/jobByIdAndCompany/:id',auth,requireRole('EMPLOYER'),controller.jobByIdAndCompany);

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 export default function Location() {
+  const token = localStorage.getItem("accessToken");
   const [locationName, setLocationName] = useState("");
   const [locations, setLocations] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -12,7 +13,11 @@ export default function Location() {
     try {
       await axios.post(`http://localhost:4002/locations`, {
         name: locationName,
-      });
+      }, {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     });
       toast.success("Location created successfully");
       setLocationName("");
       fetchLocations();
@@ -48,7 +53,11 @@ export default function Location() {
     try {
       await axios.put(`http://localhost:4002/locations/${id}`, {
         name: editingName,
-      });
+      }, {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     });
 
       setEditingId(null);
       toast.success("Location updated successfully!");
@@ -63,7 +72,11 @@ export default function Location() {
   };
   const deleteLocation = async (id) => {
     try {
-      await axios.delete(`http://localhost:4002/locations/${id}`);
+      await axios.delete(`http://localhost:4002/locations/${id}`, {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     });
       fetchLocations();
     } catch (error) {
       console.eror(error);
