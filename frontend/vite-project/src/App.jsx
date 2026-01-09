@@ -26,6 +26,7 @@ import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/User/Profile";
 import CompanyApplications from "./pages/company/CompanyApplications";
+import Users from "./pages/admin/Users";
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="applications" element={<Applications />} />
           <Route path="addApplicationByAdmin" element={<AddApplicationByAdmin />} />
+          <Route path="users" element={<Users />} />
         </Route>
 
         {/* CANDIDATE */}

@@ -171,6 +171,109 @@ router.get("/me", auth, controller.me);
 router.patch("/profile", auth, controller.updateProfile);
 
 
+// -------- ADMIN USER MANAGEMENT ROUTES --------
+
+/**
+ * @swagger
+ * /auth/admin/users:
+ *   get:
+ *     summary: Get all users (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all users
+ */
+router.get("/admin/users", auth, role("ADMIN"), controller.getAllUsers);
+
+/**
+ * @swagger
+ * /auth/admin/users/{id}:
+ *   delete:
+ *     summary: Delete a user (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ */
+router.delete("/admin/users/:id", auth, role("ADMIN"), controller.deleteUser);
+
+/**
+ * @swagger
+ * /auth/admin/users/{id}/role:
+ *   patch:
+ *     summary: Update user role (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - role
+ *             properties:
+ *               role:
+ *                 type: string
+ *                 enum: [ADMIN, CANDIDATE, EMPLOYER]
+ *     responses:
+ *       200:
+ *         description: User role updated successfully
+ */
+router.patch("/admin/users/:id/role", auth, role("ADMIN"), controller.updateUserRole);
+
+/**
+ * @swagger
+ * /auth/admin/users/{id}:
+ *   patch:
+ *     summary: Update user profile (Admin only)
+ *     tags: [Auth]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ */
+router.patch("/admin/users/:id", auth, role("ADMIN"), controller.updateAdminUser);
+
+// -------- TEST ROUTES --------
+
 router.get("/admin-test", auth, role("ADMIN"), (req, res) => {
   res.json({ message: "Welcome ADMIN 👑" });
 });

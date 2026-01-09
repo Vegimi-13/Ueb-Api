@@ -109,7 +109,8 @@ const confirmDeletion = (id) => {
 
     return(
          <>
-        <form onSubmit={handleSubmit}>
+        <div style={{ maxWidth: '95vw', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
+        <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
   <div className="mb-3">
     <label htmlFor="category" className="form-label">Category Name</label>
     <input type="text" className="form-control" id="category" aria-describedby="category" required
@@ -121,32 +122,32 @@ onChange={(e) => setCategoryName(e.target.value)}
   
   <button type="submit" className="btn btn-primary">Add Category</button>
 </form>
-<table className="table table-bordered mt-4">
-  <thead>
+<table className="table table-bordered mt-4" style={{ marginBottom: '1rem' }}>
+  <thead style={{ backgroundColor: '#f8f9fa' }}>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Category Name</th>
-      
+      <th scope="col" style={{ padding: '1rem', fontWeight: '600', width: '5%' }}>#</th>
+      <th scope="col" style={{ padding: '1rem', fontWeight: '600', width: '70%' }}>Category Name</th>
+      <th scope="col" style={{ padding: '1rem', fontWeight: '600', width: '25%' }}>Actions</th>
     </tr>
   </thead>
  
   <tbody>
     {categories.length===0?(
         <tr>
-            <td colSpan="2" className="text-center">
+            <td colSpan="3" className="text-center" style={{ padding: '1rem' }}>
                 No categories found
             </td>
         </tr>
     ):(categories.map((c,index)=>(
         <tr key={c.id}>
-            <td>{index+1}</td>
-            <td>{editingId===c.id?(
+            <td style={{ padding: '1rem', width: '5%' }}>{index+1}</td>
+            <td style={{ padding: '1rem', width: '70%' }}>{editingId===c.id?(
 
                 <input type="text" className="form-control"
                 value={editingName}
                 onChange={(e)=>setEditingName(e.target.value)}/>
             ):(c.name)}</td>
-            <td>
+            <td style={{ padding: '1rem', width: '25%' }}>
             {editingId===c.id?(
                 <>
                 <button className="btn btn-sm btn-success me-2"
@@ -154,15 +155,19 @@ onChange={(e) => setCategoryName(e.target.value)}
                 <button className="btn btn-sm btn-secondary"
                 onClick={()=>setEditingId(null)}>Cancel</button>
                 </>
-            ):(<i className="bi bi-pencil-square" title="Edit"
-            style={{cursor: "pointer"}}
-            onClick={()=>{
-                setEditingId(c.id);
-                setEditingName(c.name);
-            }}/>)}
+            ):(
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <i className="bi bi-pencil-square" title="Edit"
+                style={{cursor: "pointer"}}
+                onClick={()=>{
+                    setEditingId(c.id);
+                    setEditingName(c.name);
+                }}/>
+                <i className="bi bi-trash3-fill" title="Delete" style={{cursor: "pointer"}}
+                onClick={()=>confirmDeletion(c.id)}/>
+              </div>
+            )}
             </td>
-            <td><i className="bi bi-trash3-fill" title="Delete" style={{cursor: "pointer"}}
-            onClick={()=>confirmDeletion(c.id)}/></td>
         </tr>
     )))}
     
@@ -170,8 +175,7 @@ onChange={(e) => setCategoryName(e.target.value)}
     
   </tbody>
 </table>
-
-
+        </div>
  </>
     );
    

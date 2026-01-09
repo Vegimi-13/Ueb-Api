@@ -6,10 +6,10 @@ export default function DashboardLayout() {
   const { role } = useAuth();
 
   return (
-    <div className="d-flex">
+    <div className="d-flex" style={{ height: '100vh', overflow: 'hidden' }}>
       <Sidebar role={role} />
 
-      <div className="flex-grow-1 p-4">
+      <div className="flex-grow-1" style={{ overflow: 'hidden', height: '100vh' }}>
         <Outlet />
       </div>
     </div>

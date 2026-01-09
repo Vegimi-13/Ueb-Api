@@ -217,26 +217,32 @@ module.exports = {
       });
       return res.json(users);
     } catch (err) {
-      return res.status(500).json({ error: "Failed to fetch users" });
+      console.error("Error fetching users:", err);
+      return res.status(500).json({ error: "Failed to fetch users", details: err.message });
     }
   },
 
   async deleteUser(req, res) {
     const { id } = req.params;
-    if (id === req.user.id) {
+    const userId = parseInt(id);
+    
+    if (userId === req.user.id) {
       return res.status(400).json({ error: "You cannot delete yourself" });
     }
+    
     try {
-      await prisma.user.delete({ where: { id } });
+      await prisma.user.delete({ where: { id: userId } });
       return res.json({ message: "User deleted successfully" });
     } catch (err) {
-      return res.status(500).json({ error: "Failed to delete user" });
+      console.error("Error deleting user:", err);
+      return res.status(500).json({ error: "Failed to delete user", details: err.message });
     }
   },
 
   async updateUserRole(req, res) {
     const { id } = req.params;
     const { role } = req.body;
+    const userId = parseInt(id);
 
     if (!["ADMIN", "CANDIDATE", "EMPLOYER"].includes(role)) {
       return res.status(400).json({ error: "Invalid role" });
@@ -244,13 +250,42 @@ module.exports = {
 
     try {
       const user = await prisma.user.update({
-        where: { id },
+        where: { id: userId },
         data: { role },
         select: { id: true, role: true },
       });
       return res.json({ message: "User role updated", user });
     } catch (err) {
-      return res.status(500).json({ error: "Failed to update role" });
+      console.error("Error updating user role:", err);
+      return res.status(500).json({ error: "Failed to update role", details: err.message });
+    }
+  },
+
+  async updateAdminUser(req, res) {
+    const { id } = req.params;
+    const { firstName, lastName, email } = req.body;
+    const userId = parseInt(id);
+
+    try {
+      const user = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          ...(firstName && { firstName }),
+          ...(lastName && { lastName }),
+          ...(email && { email }),
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+        },
+      });
+      return res.json({ message: "User updated successfully", user });
+    } catch (err) {
+      console.error("Error updating user:", err);
+      return res.status(500).json({ error: "Failed to update user", details: err.message });
     }
   },
   // ================= GET USER BY ID =================
