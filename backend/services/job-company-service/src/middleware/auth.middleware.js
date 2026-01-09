@@ -1,4 +1,4 @@
-/*const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
   console.log("---- AUTH MIDDLEWARE HIT ----");
@@ -22,12 +22,4 @@ module.exports = (req, res, next) => {
     console.log("JWT VERIFY ERROR:", err.message);
     return res.status(401).json({ error: "Invalid token" });
   }
-};*/
-module.exports = (req, res, next) => {
-  req.user = {
-    id: 1,          // this will be the ownerId
-    role: "EMPLOYER" // matches requireRole in your routes
-  };
-  next();
 };
-

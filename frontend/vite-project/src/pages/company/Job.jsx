@@ -3,6 +3,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export default function Jobs(){
+
+    const token = localStorage.getItem("accessToken");
+
+
     const [jobs, setJobs]=useState([]);
     const [formData,setFormData]=useState({
         title: "",
@@ -20,7 +24,7 @@ export default function Jobs(){
 
     const fetchJobs=async()=>{
         try{
-            const res=await axios.get("http://localhost:4002/jobs");
+            const res=await axios.get("http://localhost:4002/jobs")
             setJobs(res.data);
         }catch(err){
             console.error(err);
@@ -30,13 +34,13 @@ export default function Jobs(){
     useEffect(()=>{
         fetchJobs();
 
-        axios.get("http://localhost:4002/categories")
+        axios.get("http://localhost:4002/categories",)
         .then(res=>setCategories(res.data))
         .catch(()=>toast.error("Failed to load categories."));
 
-        axios.get("http://localhost:4002/locations")
+        axios.get("http://localhost:4002/locations",)
         .then(res=>setLocations(res.data))
-        .catch(()=>toast.error("Failed to load locations."));
+        .catch(()=>toast.error("Failed to load locations."), );
     },[]);
 
     const handleSubmit=async(e)=>{
@@ -50,7 +54,14 @@ export default function Jobs(){
             locationId: Number(formData.locationId),
 };
 
-           await axios.post("http://localhost:4002/jobs",payload);
+           await axios.post("http://localhost:4002/jobs",payload,
+            {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     }
+          
+           );
             
             toast.success("Job created successfully!");
             setFormData({

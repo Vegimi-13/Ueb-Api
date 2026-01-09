@@ -3,6 +3,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export default function OpenApplications(){
+
+    const token = localStorage.getItem("accessToken");
+
+
     
     const [formData,setFormData]=useState({
         title: "",
@@ -28,7 +32,9 @@ export default function OpenApplications(){
         try{
 
             
-            const res=await axios.get("http://localhost:4002/jobs");
+            const res=await axios.get("http://localhost:4002/jobs/company",  {
+  headers: { Authorization: `Bearer ${token}` }
+});
             setJobs(res.data);
         }catch(err){
             console.error(err);
@@ -36,6 +42,7 @@ export default function OpenApplications(){
         }
     };
      useEffect(()=>{
+         if (!token) return;
             fetchJobs();
     
             axios.get("http://localhost:4002/categories")
@@ -68,7 +75,13 @@ export default function OpenApplications(){
 
             await axios.put(
                 `http://localhost:4002/jobs/${editingJob.id}`,
-                payload
+                payload,
+                {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     }
+          
             );
             toast.success("Job updated successfully");
             setShowEditModal(false);

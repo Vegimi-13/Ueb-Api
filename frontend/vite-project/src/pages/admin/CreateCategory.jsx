@@ -5,6 +5,7 @@ import axios from "axios";
 export default function CreateCategory(){
     
 
+
   
     const[categoryName, setCategoryName]=useState("");
     const [categories, setCategories]=useState([]);
@@ -17,7 +18,9 @@ const handleSubmit=async(e)=>{
    
     e.preventDefault();
     try{
-        await axios.post(`http://localhost:4002/categories`,  { name: categoryName });
+        await axios.post(`http://localhost:4002/categories`,  { name: categoryName },
+     
+        );
         toast.success("Category created successfully");
         setCategoryName("");
         fetchCategories();

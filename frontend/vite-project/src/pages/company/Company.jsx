@@ -3,6 +3,10 @@ import { toast } from "react-toastify";
 
 import axios from "axios";
 export default function Company(){
+
+    const token = localStorage.getItem("accessToken");
+
+
     
 
   
@@ -17,7 +21,11 @@ export default function Company(){
 
    
     useEffect(()=>{
-        axios.get("http://localhost:4002/companies/me")
+        axios.get("http://localhost:4002/companies/me",{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
         .then(res=>{
             
 
@@ -49,12 +57,24 @@ export default function Company(){
             : null,
         };
         if(companyId){
-            const res= await axios.put(`http://localhost:4002/companies/${companyId}`,payload);
+            const res= await axios.put(`http://localhost:4002/companies/${companyId}`,payload, {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     }
+          );
             toast.success("Company updated successfully");
             setFormData(res.data);
 
         }else{
-            const res=await axios.post("http://localhost:4002/companies",payload);
+            const res=await axios.post("http://localhost:4002/companies",payload,
+                {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     }
+          
+            );
             toast.success("Company created successfully!");
             setFormData(res.data);
             setCompanyId(res.data.id);
@@ -77,7 +97,14 @@ export default function Company(){
                         <button className="btn btn-sm btn-danger"
                     onClick={async()=>{
                         try{
-                            await axios.delete(`http://localhost:4002/companies/${companyId}`);
+                            await axios.delete(`http://localhost:4002/companies/${companyId}`,
+                                {
+             headers: {
+      Authorization: `Bearer ${token}`,
+    }
+     }
+          
+                            );
 
                             toast.success("Company deleted successfully");
 

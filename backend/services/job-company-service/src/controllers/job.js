@@ -212,6 +212,47 @@ exports.jobById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getCompanyJobs = async (req, res) => {
+  console.log("REQ.USER:", req.user);
+
+  try {
+    const userId = Number(req.user.id);
+    console.log("Logged-in user id:", userId);
+
+    
+    const allCompanies = await prisma.company.findMany();
+    console.log("ALL COMPANIES IN DB:", allCompanies);
+   
+
+    const company = await prisma.company.findFirst({
+      where: { ownerId: userId },
+    });
+
+    if (!company) {
+      console.log("Company not found for user:", userId);
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    const jobs = await prisma.job.findMany({
+      where: { companyId: company.id },
+      include: {
+        category: true,
+        location: true,
+        company: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    console.log("Jobs fetched:", jobs.length);
+    return res.json(jobs);
+
+  } catch (err) {
+    console.error("Unexpected error in getCompanyJobs:", err);
+    return res.status(500).json({ message: "Unexpected server error" });
+  }
+};
+
 exports.jobByIdAndCompany = async (req, res) => {
   try {
     const jobId = Number(req.params.id);
