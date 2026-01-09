@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { jobApi } from "../../config/api";
 import { toast } from "react-toastify";
 
 export default function OpenApplications(){
-
-    const token = localStorage.getItem("accessToken");
-
 
     
     const [formData,setFormData]=useState({
@@ -30,11 +27,7 @@ export default function OpenApplications(){
 
   const fetchJobs=async()=>{
         try{
-
-            
-            const res=await axios.get("http://localhost:4002/jobs/company",  {
-  headers: { Authorization: `Bearer ${token}` }
-});
+            const res=await jobApi.get("/jobs/company");
             setJobs(res.data);
         }catch(err){
             console.error(err);
@@ -42,14 +35,13 @@ export default function OpenApplications(){
         }
     };
      useEffect(()=>{
-         if (!token) return;
             fetchJobs();
     
-            axios.get("http://localhost:4002/categories")
+            jobApi.get("/categories")
             .then(res=>setCategories(res.data))
             .catch(()=>toast.error("Failed to load categories."));
     
-            axios.get("http://localhost:4002/locations")
+            jobApi.get("/locations")
             .then(res=>setLocations(res.data))
             .catch(()=>toast.error("Failed to load locations."));
         },[]);
@@ -73,16 +65,7 @@ export default function OpenApplications(){
                 
             };
 
-            await axios.put(
-                `http://localhost:4002/jobs/${editingJob.id}`,
-                payload,
-                {
-             headers: {
-      Authorization: `Bearer ${token}`,
-    }
-     }
-          
-            );
+            await jobApi.put(`/jobs/${editingJob.id}`, payload);
             toast.success("Job updated successfully");
             setShowEditModal(false);
             setEditingJob(null);
@@ -104,8 +87,7 @@ export default function OpenApplications(){
             className="btn btn-sm btn-danger"
             onClick={async () => {
               try {
-                
-                await axios.delete(`http://localhost:4002/jobs/${id}`);
+                await jobApi.delete(`/jobs/${id}`);
                 toast.success("Job Application deleted successfully");
                 fetchJobs();
                 closeToast();
