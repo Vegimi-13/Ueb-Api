@@ -31,7 +31,13 @@ export default function OpenApplications(){
             setJobs(res.data);
         }catch(err){
             console.error(err);
-            toast.error("Failed to fetch jobs");
+            // Only show error if it's not a "no jobs found" situation
+            if (err.response?.status !== 404) {
+                toast.error("Failed to fetch jobs");
+            } else {
+                // Silently handle 404 - no jobs yet
+                setJobs([]);
+            }
         }
     };
      useEffect(()=>{
