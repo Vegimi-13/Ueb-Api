@@ -112,12 +112,14 @@ export default function OpenApplications(){
     
     return(
         <>
+        <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
         <table className="table table-bordered mt-4">
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Open Job Applications</th>
-      
+      <th scope="col">Edit</th>
+      <th scope="col">Delete</th>
     </tr>
   </thead>
  
@@ -292,7 +294,7 @@ export default function OpenApplications(){
             </div>
             </div>
          )}
-
+</div>
         </>
     );
 

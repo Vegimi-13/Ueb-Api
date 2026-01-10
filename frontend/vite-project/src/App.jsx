@@ -81,7 +81,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<CandidateDashboard />} />
+          <Route index element={<Profile />} />
           <Route path="addApplication/:jobId" element={<AddApplication />} />
           <Route path="searchJobsByCandidate" element={<SearchJobsByCandidate />} />
           <Route path="profile" element={<Profile />} />
@@ -97,7 +97,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<CompanyDashboard />} />
+          <Route index element={<Profile />} />
           <Route path="registerCompany" element={<Company />} />
           <Route path="jobs" element={<Jobs />} />
           <Route path="profile" element={<Profile />} />

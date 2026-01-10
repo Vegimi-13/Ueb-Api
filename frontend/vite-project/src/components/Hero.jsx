@@ -3,7 +3,7 @@ import styles from "./Hero.module.css";
 import useAuth from "../auth/useAuth";
 
 export default function Hero() {
-  const {isAuthenticated} = useAuth();
+  const {isAuthenticated, user} = useAuth();
   return (
     <section className={styles.section}>
       {/* Decorative Blobs */}
@@ -32,12 +32,17 @@ export default function Hero() {
                 <Link to="/searchJobs" className={styles.primaryBtn}>
                   Browse Jobs
                 </Link>
-                 {/* Only show Post a Job if user is NOT authenticated */}
-  {!isAuthenticated && (
-    <Link to="/register" className={styles.outlineBtn}>
-      Post a Job
-    </Link>
-  )}
+                {/* Show Post a Job based on authentication status */}
+                {!isAuthenticated && (
+                  <Link to="/register" className={styles.outlineBtn}>
+                    Post a Job
+                  </Link>
+                )}
+                {isAuthenticated && user?.role === 'EMPLOYER' && (
+                  <Link to="/company/jobs" className={styles.outlineBtn}>
+                    Post a Job
+                  </Link>
+                )}
               </div>
 
               <div className={styles.stats}>

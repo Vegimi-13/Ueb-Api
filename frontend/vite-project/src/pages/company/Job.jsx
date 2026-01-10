@@ -92,6 +92,7 @@ export default function Jobs(){
     };
     return(
         <>
+        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
          <form onSubmit={handleSubmit} className="p-3 border rounded mt-5">
   <div className="row g-2">
     <div className="col-md-6">
@@ -211,7 +212,7 @@ export default function Jobs(){
     </div>
   </div>
 </form>
-
+</div>
         </>
     );
 

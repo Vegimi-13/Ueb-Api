@@ -82,3 +82,21 @@
 .brand:hover {
   color: #4f46e5; /* Indigo-600 */
 }
+
+.burgerBtn {
+  border: none !important;
+  background-color: rgba(79, 70, 229, 0.08);
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.burgerBtn:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.burgerBtn:hover {
+  background-color: rgba(79, 70, 229, 0.15);
+  transform: translateY(-1px);
+}

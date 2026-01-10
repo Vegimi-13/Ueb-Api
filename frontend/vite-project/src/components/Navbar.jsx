@@ -13,7 +13,7 @@ export default function Navbar() {
         </Link>
         
         <button 
-          className="navbar-toggler" 
+          className={`navbar-toggler ${styles.burgerBtn}`}
           type="button" 
           data-bs-toggle="collapse" 
           data-bs-target="#navbarNav" 
@@ -50,7 +50,7 @@ export default function Navbar() {
                 </button>
 
                 <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-                  <li className="px-3 py-2 border-bottom">
+                  <li className="px-3 py-2 border-bottom" style={{ paddingLeft: 'calc(1rem + 1.5em)' }}>
                     <p className="mb-0 fw-bold text-dark">
                       {user?.firstName} {user?.lastName}
                     </p>

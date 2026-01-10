@@ -135,7 +135,7 @@ export default function Company(){
 
     return(
          <>
-         <div>
+         <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
             
         <form onSubmit={handleSubmit}>
             <h3>{companyId? "Edit your company data":"Register your company"}</h3>
@@ -172,12 +172,14 @@ onChange={handleChange}
     
   </div>
   
-  <button type="submit" className="btn btn-primary">{companyId ? "Edit your Company Data" : "Register your Company"}</button>
+  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+    <button type="submit" className="btn btn-primary">{companyId ? "Edit your Company Data" : "Register your Company"}</button>
+    {companyId&& (
+        <button type="button"
+        className="btn btn-danger" onClick={confirmDelete}>Delete Company</button>
+    )}
+  </div>
 </form>
-{companyId&& (
-    <button type="button"
-    className="btn btn-danger ms-2 mt-4" onClick={confirmDelete}>Delete Company</button>
-)}
 
 </div>
 

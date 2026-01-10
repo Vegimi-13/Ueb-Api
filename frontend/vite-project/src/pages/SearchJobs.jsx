@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../auth/useAuth";
+import styles from "./SearchJobs.module.css";
 
 
 export default function SearchJobs() {
@@ -12,7 +13,7 @@ const [resumeFile, setResumeFile] = useState(null);
 const [uploading, setUploading] = useState(false);
 
 const navigate = useNavigate();
-const { isAuthenticated, loading } = useAuth();
+const { isAuthenticated, user } = useAuth();
 
 const [jobs, setJobs]=useState([]);
 const [filters,setFilters]=useState({
@@ -225,28 +226,50 @@ const handleSubmitApplication = async () => {
   </div>
 
   
-  {jobs.map((job) => (
-    <div key={job.id} className="card mb-4 shadow-sm">
-      <div className="card-body">
-        <h5 className="card-title">{job.title}</h5>
-        <h6 className="card-subtitle text-muted mb-2">{job.company.name}</h6>
-        
-
-        <div className="d-flex flex-wrap gap-3 text-muted">
-          <small>Salary: {job.salary ? `€${job.salary}` : "Not specified"}</small>
-          <small>Category: {job.category.name}</small>
-          <small>Location: {job.location.name}</small>
-          <small>Type: {job.JobType ? job.JobType.replace("_", " ") : "Not specified"}</small>
+  <div className={styles.jobGrid}>
+    {jobs.map((job) => (
+      <div key={job.id} className={styles.jobCard}>
+        <div className={styles.cardBody}>
+          <h5 className={styles.jobTitle}>{job.title}</h5>
+          <h6 className={styles.companyName}>{job.company.name}</h6>
+          
+          <div className={styles.jobDetails}>
+            <div className={styles.detailItem}>
+              <span className={styles.detailIcon}>💰</span>
+              <span className={styles.detailLabel}>Salary:</span>
+              <span className={styles.detailValue}>{job.salary ? `€${job.salary}` : "Not specified"}</span>
+            </div>
+            <div className={styles.detailItem}>
+              <span className={styles.detailIcon}>📁</span>
+              <span className={styles.detailLabel}>Category:</span>
+              <span className={styles.detailValue}>{job.category.name}</span>
+            </div>
+            <div className={styles.detailItem}>
+              <span className={styles.detailIcon}>📍</span>
+              <span className={styles.detailLabel}>Location:</span>
+              <span className={styles.detailValue}>{job.location.name}</span>
+            </div>
+            <div className={styles.detailItem}>
+              <span className={styles.detailIcon}>💼</span>
+              <span className={styles.detailLabel}>Type:</span>
+              <span className={styles.detailValue}>{job.JobType ? job.JobType.replace("_", " ") : "Not specified"}</span>
+            </div>
+          </div>
         </div>
+        <button
+          className={styles.applyButton}
+          onClick={() => handleApplyClick(job)}
+          disabled={user?.role === 'EMPLOYER'}
+          style={{
+            opacity: user?.role === 'EMPLOYER' ? 0.5 : 1,
+            cursor: user?.role === 'EMPLOYER' ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {user?.role === 'EMPLOYER' ? 'Not Available for Employers' : 'Apply Now'}
+        </button>
       </div>
-<button
-  className="btn btn-primary px-4 mb-3"
-  onClick={() => handleApplyClick(job)}
->
-  Apply
-</button>
-    </div>
-  ))}
+    ))}
+  </div>
   {selectedJob && (
   <div
     className="modal fade show d-block"

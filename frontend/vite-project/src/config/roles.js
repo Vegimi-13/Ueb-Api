@@ -10,7 +10,6 @@ export const roles = {
   },
   CANDIDATE: {
     menu: [
-      { label: "Dashboard", path: "/candidate", icon: "bi-speedometer2" },
       { label: "My Profile", path: "/candidate/profile", icon: "bi-person" },
       { label: "My Job Applications", path: "/candidate/candidateApplications", icon: "bi-ui-radios" },
       { label: "Search Jobs", path: "/", icon: "bi-file-earmark-plus" },
@@ -19,7 +18,6 @@ export const roles = {
   },
   EMPLOYER: {
     menu: [
-      { label: "Dashboard", path: "/company", icon: "bi-speedometer2" },
       { label: "Profile", path: "/company/profile" },
       { label: "Register Company", path: "/company/registerCompany" },
       { label: "Create Jobs", path: "/company/jobs" },

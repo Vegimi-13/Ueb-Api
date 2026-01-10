@@ -134,6 +134,7 @@ const [searchTerm, setSearchTerm] = useState("");
 
     return(
       <>
+      <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
 
         <h1>Applications</h1>
         <div className="mb-3">
@@ -247,7 +248,7 @@ const [searchTerm, setSearchTerm] = useState("");
   </div>
 )}
 
-
+</div>
  </>
     );
 };

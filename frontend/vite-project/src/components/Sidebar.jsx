@@ -60,6 +60,13 @@ export default function Sidebar({ role }) {
       {/* Footer */}
       <div className="p-3 border-top border-secondary">
         <button
+          className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center mb-2"
+          onClick={() => navigate("/")}
+        >
+          <i className="bi bi-house" />
+          {!collapsed && <span className="ms-2">Back to Home</span>}
+        </button>
+        <button
           className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center"
           onClick={handleLogout}
         >
